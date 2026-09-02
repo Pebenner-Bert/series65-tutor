@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Series 65 – Practice Test (200 Q)</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0f1117;--surface:#1a1d27;--surface2:#242736;--border:#2e3148;
+  --text:#e8eaf0;--text-muted:#8b8fa8;--accent:#4f8ef7;--accent2:#7c5cbf;
+  --green:#22c55e;--red:#ef4444;--yellow:#f59e0b;--orange:#f97316;
+  --radius:12px;--radius-lg:18px;
+}
+body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;min-height:100vh;display:flex;flex-direction:column;font-size:15px;line-height:1.55}
+
+/* ── TOP NAV ── */
+#header{background:var(--surface);border-bottom:1px solid var(--border);padding:12px 16px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;gap:10px}
+#header h1{font-size:17px;font-weight:700;letter-spacing:-.3px;color:var(--accent);white-space:nowrap}
+#header h1 span{color:var(--text-muted);font-weight:400}
+#header-nav{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.nav-link{background:var(--surface2);border:1px solid var(--border);color:var(--text-muted);border-radius:20px;padding:6px 14px;font-size:13px;cursor:pointer;white-space:nowrap;transition:all .2s;font-weight:500;text-decoration:none}
+.nav-link:hover{border-color:var(--accent);color:var(--text)}
+
+/* ── SCORE BAR ── */
+#score-bar{background:var(--surface);border-bottom:1px solid var(--border);padding:10px 16px;display:flex;align-items:center;gap:16px;font-size:14px;flex-wrap:wrap}
+#score-bar .sb-item{display:flex;align-items:center;gap:6px}
+#score-bar .sb-val{font-weight:700;font-size:16px}
+#score-bar .sb-lbl{color:var(--text-muted);font-size:13px}
+#progress-wrap{flex:1;min-width:120px;height:6px;background:var(--border);border-radius:3px;overflow:hidden}
+#progress-fill{height:100%;background:var(--accent);border-radius:3px;transition:width .3s}
+#score-pct{font-size:22px;font-weight:800}
+.pass-color{color:var(--green)}
+.fail-color{color:var(--red)}
+.neutral-color{color:var(--accent)}
+
+/* ── MAIN LAYOUT ── */
+#main{flex:1;display:flex;flex-direction:column;overflow:hidden}
+
+/* ── QUIZ VIEW ── */
+#quiz-view{flex:1;overflow-y:auto;padding:16px 14px;display:flex;flex-direction:column;gap:0}
+#quiz-view::-webkit-scrollbar{width:4px}
+#quiz-view::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
+
+/* ── QUESTION CARD ── */
+.q-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);margin-bottom:20px;overflow:hidden;transition:border-color .2s}
+.q-card.answered-correct{border-color:#22c55e}
+.q-card.answered-wrong{border-color:#ef4444}
+.q-header{padding:14px 16px 12px;display:flex;align-items:flex-start;gap:10px}
+.q-num{background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:4px 9px;font-size:12px;font-weight:700;color:var(--accent);white-space:nowrap;flex-shrink:0;margin-top:1px}
+.q-text{font-size:15px;font-weight:500;line-height:1.55;flex:1}
+.q-choices{padding:0 14px 14px;display:flex;flex-direction:column;gap:7px}
+.choice-btn{background:var(--surface2);border:1px solid var(--border);color:var(--text);border-radius:var(--radius);padding:11px 14px;text-align:left;font-size:14px;cursor:pointer;transition:all .2s;line-height:1.45;font-weight:400;display:flex;align-items:flex-start;gap:10px}
+.choice-btn:hover:not(:disabled){background:#2e3148;border-color:var(--accent);transform:translateX(2px)}
+.choice-btn:disabled{cursor:default;transform:none}
+.choice-letter{font-weight:700;color:var(--accent);min-width:18px;flex-shrink:0}
+.choice-btn.selected-correct{background:#14532d!important;border-color:#22c55e!important;color:#86efac!important}
+.choice-btn.selected-correct .choice-letter{color:#86efac!important}
+.choice-btn.selected-wrong{background:#450a0a!important;border-color:#ef4444!important;color:#fca5a5!important}
+.choice-btn.selected-wrong .choice-letter{color:#fca5a5!important}
+.choice-btn.reveal-correct{background:#1a3a20!important;border-color:#22c55e!important;color:#86efac!important}
+.choice-btn.reveal-correct .choice-letter{color:#86efac!important}
+
+/* ── EXPLANATION ── */
+.q-explanation{margin:0 14px 14px;padding:12px 14px;background:var(--bg);border:1px solid var(--border);border-radius:var(--radius);font-size:14px;color:#c8cad8;line-height:1.6;display:none}
+.q-explanation.visible{display:block}
+.q-explanation strong{color:var(--accent)}
+.explain-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--text-muted);margin-bottom:5px}
+
+/* ── RESULT BADGE ── */
+.q-result-badge{display:none;padding:8px 14px;font-size:13px;font-weight:600;align-items:center;gap:8px}
+.q-result-badge.visible{display:flex}
+.q-result-badge.correct{color:var(--green)}
+.q-result-badge.wrong{color:var(--red)}
+
+/* ── BOTTOM ACTION BAR ── */
+#action-bar{background:var(--surface);border-top:1px solid var(--border);padding:12px 16px;display:flex;gap:10px;align-items:center;flex-wrap:wrap;position:sticky;bottom:0;z-index:50}
+.action-btn{background:var(--surface2);border:1px solid var(--border);color:var(--text);border-radius:10px;padding:9px 16px;font-size:13px;cursor:pointer;transition:all .2s;font-weight:500;display:flex;align-items:center;gap:6px}
+.action-btn:hover{border-color:var(--accent);color:var(--accent)}
+#submit-btn{background:var(--accent);border-color:var(--accent);color:#fff;font-weight:700;font-size:14px;padding:10px 22px}
+#submit-btn:hover{background:#3a7ef0;border-color:#3a7ef0}
+#submit-btn:disabled{opacity:.5;cursor:not-allowed}
+#restart-btn{background:var(--surface2)}
+
+/* ── RESULTS VIEW ── */
+#results-view{display:none;flex:1;overflow-y:auto;padding:16px 14px}
+.big-score-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:28px 20px;text-align:center;margin-bottom:16px}
+.big-score-num{font-size:64px;font-weight:800;line-height:1}
+.pass-fail-label{font-size:22px;font-weight:700;margin-top:8px}
+.score-sub{color:var(--text-muted);margin-top:6px;font-size:14px}
+.pass-mark-note{color:var(--text-muted);font-size:13px;margin-top:4px}
+.results-section-breakdown{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:16px;margin-bottom:16px}
+.results-section-breakdown h3{font-size:13px;font-weight:700;color:var(--text-muted);margin-bottom:12px;text-transform:uppercase;letter-spacing:.5px}
+.sec-row{display:flex;align-items:center;gap:10px;margin-bottom:9px;font-size:14px}
+.sec-name{flex:1;color:var(--text)}
+.sec-pct-label{font-weight:700;width:46px;text-align:right}
+.prog-bar{flex:1.5;height:8px;background:var(--border);border-radius:4px;overflow:hidden}
+.prog-fill{height:100%;border-radius:4px;transition:width .6s}
+.results-insight{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:14px;margin-bottom:16px;font-size:14px;color:#c8cad8;line-height:1.65}
+.results-insight strong{color:var(--accent)}
+.review-section{margin-bottom:16px}
+.review-section h3{font-size:14px;font-weight:700;color:var(--text-muted);margin-bottom:10px;text-transform:uppercase;letter-spacing:.5px;padding:10px 14px;background:var(--surface);border:1px solid var(--border);border-radius:10px}
+.review-item{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:12px 14px;margin-bottom:8px}
+.review-item.wrong-item{border-color:#ef4444}
+.review-item .q-num-small{font-size:11px;font-weight:700;color:var(--text-muted);margin-bottom:5px}
+.review-item .q-text-small{font-size:14px;margin-bottom:6px}
+.review-item .ans-label{font-size:12px;margin-top:4px}
+.review-item .ans-label.correct-ans{color:var(--green)}
+.review-item .ans-label.wrong-ans{color:var(--red)}
+.review-item .expl-small{font-size:13px;color:#c8cad8;margin-top:8px;padding-top:8px;border-top:1px solid var(--border)}
+
+/* ── UNANSWERED BANNER ── */
+#unanswered-banner{display:none;background:#450a0a;border:1px solid var(--red);border-radius:var(--radius);padding:10px 14px;margin:10px 14px 0;font-size:14px;color:#fca5a5}
+
+/* ── RESPONSIVE ── */
+@media(max-width:480px){
+  .q-text{font-size:14px}
+  .choice-btn{font-size:13px;padding:10px 12px}
+  #score-pct{font-size:18px}
+}
+</style>
+</head>
+<body>
+
+<div id="header">
+  <h1>Series 65 <span>Practice Test</span></h1>
+  <div id="header-nav">
+    <a href="index.html" class="nav-link">← Tutor</a>
+    <span id="header-progress" style="font-size:13px;color:var(--text-muted)"></span>
+  </div>
+</div>
+
+<div id="score-bar">
+  <div class="sb-item">
+    <span class="sb-val neutral-color" id="sb-answered">0</span>
+    <span class="sb-lbl" id="total-q-label">/ 200 answered</span>
+  </div>
+  <div class="sb-item">
+    <span class="sb-val" id="sb-correct" style="color:var(--green)">0</span>
+    <span class="sb-lbl">correct</span>
+  </div>
+  <div class="sb-item">
+    <span class="sb-val" id="sb-wrong" style="color:var(--red)">0</span>
+    <span class="sb-lbl">wrong</span>
+  </div>
+  <div id="progress-wrap">
+    <div id="progress-fill" style="width:0%"></div>
+  </div>
+  <div class="sb-item">
+    <span id="score-pct" class="neutral-color">—%</span>
+  </div>
+</div>
+
+<div id="main">
+  <div id="unanswered-banner"></div>
+
+  <!-- QUIZ VIEW -->
+  <div id="quiz-view"></div>
+
+  <!-- RESULTS VIEW -->
+  <div id="results-view"></div>
+</div>
+
+<div id="action-bar">
+  <button class="action-btn" id="restart-btn" onclick="restartTest()" style="display:none">🔁 Restart</button>
+  <div style="flex:1"></div>
+  <button class="action-btn" id="submit-btn" onclick="submitTest()">Submit Test →</button>
+</div>
+
+<script src="practice_test_data.js"></script>
+<script>
+// ── State ──
+let answers = {}; // id -> chosen letter
+let submitted = false;
+
+// ── Boot ──
+function init() {
+  renderQuestions();
+  updateScoreBar();
+  document.getElementById('restart-btn').style.display = 'none';
+}
+
+// ── Render all questions ──
+function renderQuestions() {
+  const container = document.getElementById('quiz-view');
+  container.innerHTML = '';
+
+  PRACTICE_TEST_QUESTIONS.forEach((q, idx) => {
+    const card = document.createElement('div');
+    card.className = 'q-card';
+    card.id = `q-card-${q.id}`;
+
+    const choicesHtml = Object.entries(q.choices).map(([letter, text]) => `
+      <button class="choice-btn" id="choice-${q.id}-${letter}" 
+              onclick="selectAnswer(${q.id}, '${letter}')"
+              data-letter="${letter}">
+        <span class="choice-letter">${letter}</span>
+        <span>${escHtml(text)}</span>
+      </button>
+    `).join('');
+
+    card.innerHTML = `
+      <div class="q-header">
+        <span class="q-num">Q${q.id}</span>
+        <span class="q-text">${escHtml(q.question)}</span>
+      </div>
+      <div class="q-choices" id="choices-${q.id}">
+        ${choicesHtml}
+      </div>
+      <div class="q-result-badge" id="result-badge-${q.id}"></div>
+      <div class="q-explanation" id="expl-${q.id}">
+        <div class="explain-label">💡 Explanation</div>
+        ${escHtml(q.explanation)}
+      </div>
+    `;
+
+    container.appendChild(card);
+  });
+}
+
+function escHtml(s) {
+  return (s || '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
+// ── Answer selection ──
+function selectAnswer(qid, letter) {
+  if (submitted) return;
+
+  const prev = answers[qid];
+  answers[qid] = letter;
+
+  // Update button states
+  const choicesEl = document.getElementById(`choices-${qid}`);
+  choicesEl.querySelectorAll('.choice-btn').forEach(btn => {
+    btn.classList.remove('selected-correct', 'selected-wrong', 'reveal-correct');
+  });
+
+  const btn = document.getElementById(`choice-${qid}-${letter}`);
+  if (btn) btn.classList.add('selected-correct'); // just highlight selected (no feedback yet)
+
+  // If previously unanswered, increment counter
+  updateScoreBar();
+  hideBanner();
+}
+
+// ── Score bar ──
+function updateScoreBar() {
+  const answered = Object.keys(answers).length;
+  const total = PRACTICE_TEST_QUESTIONS.length;
+  const pct = answered / total * 100;
+
+  document.getElementById('sb-answered').textContent = answered;
+  document.getElementById('progress-fill').style.width = pct + '%';
+  document.getElementById('header-progress').textContent = `${answered}/${total}`;
+
+  if (submitted) {
+    let correct = 0;
+    PRACTICE_TEST_QUESTIONS.forEach(q => {
+      if (answers[q.id] === q.correct) correct++;
+    });
+    const wrong = answered - correct;
+    const scorePct = (correct / total * 100).toFixed(1);
+    document.getElementById('sb-correct').textContent = correct;
+    document.getElementById('sb-wrong').textContent = wrong;
+    const pctEl = document.getElementById('score-pct');
+    pctEl.textContent = scorePct + '%';
+    pctEl.className = parseFloat(scorePct) >= 72.3 ? 'pass-color' : 'fail-color';
+  } else {
+    document.getElementById('sb-correct').textContent = '—';
+    document.getElementById('sb-wrong').textContent = '—';
+    document.getElementById('score-pct').textContent = '—%';
+  }
+}
+
+// ── Submit ──
+function submitTest() {
+  const answered = Object.keys(answers).length;
+  const total = PRACTICE_TEST_QUESTIONS.length;
+  const unanswered = total - answered;
+
+  if (unanswered > 0) {
+    const banner = document.getElementById('unanswered-banner');
+    banner.textContent = `⚠️ You have ${unanswered} unanswered question${unanswered > 1 ? 's' : ''}. Scroll through and answer all questions, or submit anyway to see partial results.`;
+    banner.style.display = 'block';
+    // Find first unanswered and scroll to it
+    const firstUnanswered = PRACTICE_TEST_QUESTIONS.find(q => !answers[q.id]);
+    if (firstUnanswered) {
+      const el = document.getElementById(`q-card-${firstUnanswered.id}`);
+      if (el) {
+        el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        el.style.borderColor = 'var(--yellow)';
+        setTimeout(() => { el.style.borderColor = ''; }, 2000);
+      }
+    }
+
+    // Change button to "Submit Anyway"
+    const btn = document.getElementById('submit-btn');
+    btn.textContent = `Submit Anyway (${unanswered} unanswered)`;
+    btn.onclick = finalSubmit;
+    return;
+  }
+
+  finalSubmit();
+}
+
+function finalSubmit() {
+  submitted = true;
+  hideBanner();
+
+  // Reveal answers on all questions
+  PRACTICE_TEST_QUESTIONS.forEach(q => {
+    const userAnswer = answers[q.id];
+    const isCorrect = userAnswer === q.correct;
+
+    const card = document.getElementById(`q-card-${q.id}`);
+    const choicesEl = document.getElementById(`choices-${q.id}`);
+    const badge = document.getElementById(`result-badge-${q.id}`);
+    const expl = document.getElementById(`expl-${q.id}`);
+
+    // Disable all buttons
+    choicesEl.querySelectorAll('.choice-btn').forEach(btn => {
+      btn.disabled = true;
+      const letter = btn.dataset.letter;
+      btn.classList.remove('selected-correct', 'selected-wrong', 'reveal-correct');
+      if (letter === q.correct) {
+        btn.classList.add('reveal-correct');
+      } else if (letter === userAnswer && !isCorrect) {
+        btn.classList.add('selected-wrong');
+      }
+    });
+
+    // Card border
+    if (userAnswer) {
+      card.classList.add(isCorrect ? 'answered-correct' : 'answered-wrong');
+    }
+
+    // Badge
+    if (userAnswer) {
+      badge.className = `q-result-badge visible ${isCorrect ? 'correct' : 'wrong'}`;
+      badge.textContent = isCorrect ? '✅ Correct' : `❌ Wrong — correct answer: ${q.correct}`;
+    } else {
+      badge.className = 'q-result-badge visible wrong';
+      badge.textContent = `⬜ Not answered — correct answer: ${q.correct}`;
+    }
+
+    // Show explanation
+    expl.classList.add('visible');
+  });
+
+  // Update score bar
+  updateScoreBar();
+
+  // Show action bar restart
+  document.getElementById('submit-btn').style.display = 'none';
+  document.getElementById('restart-btn').style.display = 'inline-flex';
+
+  // Scroll to top and show results summary
+  showResults();
+}
+
+function hideBanner() {
+  document.getElementById('unanswered-banner').style.display = 'none';
+  // Reset submit button
+  if (!submitted) {
+    document.getElementById('submit-btn').textContent = 'Submit Test →';
+    document.getElementById('submit-btn').onclick = submitTest;
+  }
+}
+
+// ── Results Summary ──
+function showResults() {
+  let correct = 0;
+  let wrongItems = [];
+
+  PRACTICE_TEST_QUESTIONS.forEach(q => {
+    const userAnswer = answers[q.id];
+    if (userAnswer === q.correct) {
+      correct++;
+    } else {
+      wrongItems.push({ q, userAnswer });
+    }
+  });
+
+  const totalQ = PRACTICE_TEST_QUESTIONS.length;
+  const pct = (correct / totalQ * 100).toFixed(1);
+  const passed = parseFloat(pct) >= 72.3;
+
+  // Scroll to top
+  document.getElementById('quiz-view').scrollTop = 0;
+  window.scrollTo(0, 0);
+
+  // Insert results summary at top of quiz view
+  const quizView = document.getElementById('quiz-view');
+
+  // Big score banner (prepend)
+  const resultsBanner = document.createElement('div');
+  resultsBanner.style.cssText = 'background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:24px 20px;text-align:center;margin-bottom:20px';
+
+  const passColor = passed ? 'var(--green)' : 'var(--red)';
+  const passLabel = passed ? 'PASS ✅' : 'FAIL ❌';
+
+  resultsBanner.innerHTML = `
+    <div style="font-size:60px;font-weight:800;color:${passColor};line-height:1">${pct}%</div>
+    <div style="font-size:22px;font-weight:700;margin-top:8px;color:${passColor}">${passLabel}</div>
+    <div style="color:var(--text-muted);margin-top:6px;font-size:14px">${correct} / ${totalQ} correct</div>
+    <div style="color:var(--text-muted);font-size:13px;margin-top:4px">Passing score: 72.3% (94/130 on real exam)</div>
+    <div style="margin-top:14px;display:flex;gap:10px;justify-content:center;flex-wrap:wrap">
+      <button class="action-btn" onclick="scrollToWrong()" style="background:var(--surface2)">📋 Review Wrong (${wrongItems.length})</button>
+      <button class="action-btn" onclick="restartTest()" style="background:var(--accent);border-color:var(--accent);color:#fff;font-weight:600">🔁 Restart Test</button>
+    </div>
+  `;
+
+  quizView.insertBefore(resultsBanner, quizView.firstChild);
+  quizView.scrollTop = 0;
+}
+
+function scrollToWrong() {
+  // Find first wrong answer card
+  const firstWrong = PRACTICE_TEST_QUESTIONS.find(q => answers[q.id] !== q.correct);
+  if (firstWrong) {
+    const el = document.getElementById(`q-card-${firstWrong.id}`);
+    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+}
+
+// ── Restart ──
+function restartTest() {
+  answers = {};
+  submitted = false;
+  document.getElementById('submit-btn').style.display = 'inline-flex';
+  document.getElementById('submit-btn').textContent = 'Submit Test →';
+  document.getElementById('submit-btn').onclick = submitTest;
+  document.getElementById('restart-btn').style.display = 'none';
+  hideBanner();
+  renderQuestions();
+  updateScoreBar();
+  document.getElementById('quiz-view').scrollTop = 0;
+  window.scrollTo(0, 0);
+}
+
+// ── Init ──
+document.addEventListener('DOMContentLoaded', init);
+</script>
+</body>
+</html>

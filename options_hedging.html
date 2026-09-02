@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<!--
+  OPTIONS HEDGING — one-page tape-up sheet for the Series 65.
+  Built Aug 18 2026 for Paul (exam Sept 9 2026).
+
+  SOURCES (nothing here is invented):
+   * Series65/podcast_options_basics.txt  — definitions, max gain/loss, breakeven
+   * TestGeek_Practice_Final_130.pdf Q11, Q12, Q25, Q108 — quoted verbatim,
+     including their answer-key rationales.
+
+  ⚠️ WHY THIS SHEET EXISTS / THE CORRECTION IT MAKES
+  Paul was given the rule "long stock -> buy put / short stock -> buy call".
+  That is only the PROTECT half. Applied to TestGeek Q11 (long stock, wants to
+  PROFIT from a dip) it yields "buy a put" — the answer key says SELL A CALL.
+  So the sheet teaches the complete 2x2: the position picks the option TYPE,
+  and protect-vs-income picks BUY or SELL.
+
+  PRINT: Letter portrait, ONE page. Verified by rendering to PDF (1 page) and PNG.
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Options Hedging — One Page (Series 65)</title>
+<style>
+  @page { size: Letter portrait; margin: 0.3in; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body {
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    color: #0d1220; background: #fff;
+    -webkit-font-smoothing: antialiased;
+  }
+  /* Sized to FILL a Letter page top-to-bottom. The first draft used ~70% of the
+     height with small type - useless taped on a wall. Everything below is scaled
+     up so key terms read from 2-3 feet away. */
+  body { width: 7.9in; min-height: 10.35in; margin: 0 auto; padding: 0;
+         display: flex; flex-direction: column; }
+
+  /* ---------- header ---------- */
+  .hdr { border-bottom: 3.5px solid #0d1220; padding-bottom: 5px; margin-bottom: 9px; }
+  .hdr h1 { font-size: 26.53px; letter-spacing: -0.7px; line-height: 1; }
+  .hdr .sub { font-size: 10.61px; color: #5b6478; font-weight: 600; margin-top: 4px; }
+
+  /* ---------- the two sentences ---------- */
+  .core { border: 3px solid #0d1220; border-radius: 9px; padding: 10px 13px 12px; margin-bottom: 10px;
+          background: #f7f9fc; }
+  .core .lbl { font-size: 9.73px; font-weight: 800; letter-spacing: 1.4px; color: #5b6478; margin-bottom: 7px; }
+  .line { display: flex; align-items: center; gap: 9px; font-size: 22.11px; font-weight: 800;
+          letter-spacing: -0.4px; line-height: 1.24; }
+  .line + .line { margin-top: 5px; }
+  .pos { min-width: 158px; }
+  .arrow { color: #97a0b5; font-weight: 700; }
+  .prot { color: #0a7d4e; }
+  .pays { color: #b4560a; }
+  .dot  { color: #c3cad8; }
+
+  /* ---------- 2x2 matrix ---------- */
+  .grid { display: grid; grid-template-columns: 96px 1fr 1fr; gap: 6px; margin-bottom: 10px; }
+  .chdr { font-size: 11.05px; font-weight: 800; letter-spacing: 0.4px; text-align: center;
+          padding: 6px 4px; border-radius: 6px; color: #fff; }
+  .chdr.b { background: #0a7d4e; }
+  .chdr.s { background: #b4560a; }
+  .chdr small { display: block; font-weight: 600; font-size: 8.84px; opacity: .92; letter-spacing: 0; margin-top: 1px; }
+  .rhdr { display: flex; flex-direction: column; justify-content: center; align-items: center;
+          text-align: center; font-size: 12.38px; font-weight: 800; line-height: 1.12;
+          background: #0d1220; color: #fff; border-radius: 6px; padding: 5px 3px; }
+  .rhdr em { display: block; font-style: normal; font-size: 8.49px; font-weight: 600;
+             color: #b6bfd0; margin-top: 4px; letter-spacing: .2px; }
+  .cell { border: 2px solid #d7dceb; border-radius: 7px; padding: 8px 9px 9px; }
+  .cell.buy  { border-color: #9ed4bb; background: #f2fbf7; }
+  .cell.sell { border-color: #f0cba3; background: #fef8f1; }
+  .act { font-size: 17.69px; font-weight: 800; letter-spacing: -0.3px; line-height: 1.08; }
+  .act.g { color: #0a7d4e; } .act.o { color: #b4560a; }
+  .nm { font-size: 10.26px; font-weight: 800; color: #0d1220; margin-top: 3px; }
+  .ex { font-size: 9.46px; line-height: 1.36; margin-top: 4px; color: #3c465e; }
+  .ex b { color: #0d1220; }
+
+  /* ---------- why-it-works strip ---------- */
+  .why { display: grid; grid-template-columns: 1fr 1fr; gap: 7px; margin-bottom: 10px; }
+  .why div { border-left: 4px solid #0d1220; background: #f4f6fa; padding: 7px 10px;
+             font-size: 9.73px; line-height: 1.38; border-radius: 0 5px 5px 0; }
+  .why b { font-size: 10.26px; }
+
+  /* ---------- numbers ---------- */
+  .numsec { border: 2.5px solid #0d1220; border-radius: 9px; padding: 9px 11px 10px; margin-bottom: 10px; }
+  .numsec .lbl { font-size: 9.73px; font-weight: 800; letter-spacing: 1.4px; color: #5b6478; margin-bottom: 7px; }
+  .nums { display: grid; grid-template-columns: repeat(4, 1fr); gap: 7px; }
+  .n { border: 1.8px solid #dde2ee; border-radius: 6px; padding: 6px 7px; }
+  .n .t { font-size: 9.46px; font-weight: 800; color: #0d1220; }
+  .n .f { font-size: 13.71px; font-weight: 800; color: #1b4fd8; margin: 3px 0 2px; letter-spacing: -0.3px; }
+  .n .e { font-size: 8.49px; color: #55607a; line-height: 1.28; }
+  .be { margin-top: 8px; font-size: 10.61px; font-weight: 700; background: #eef2fb;
+        border-radius: 6px; padding: 7px 10px; line-height: 1.45; }
+  .be b { color: #1b4fd8; }
+
+  /* ---------- exam proof ---------- */
+  .proof { border: 2.5px solid #0d1220; border-radius: 9px; overflow: hidden; margin-bottom: 10px; }
+  .proof .cap { background: #0d1220; color: #fff; font-size: 9.55px; font-weight: 800;
+                letter-spacing: 1px; padding: 5px 10px; }
+  .qs { display: grid; grid-template-columns: 1fr 1fr; }
+  .q { padding: 8px 10px; font-size: 9.46px; line-height: 1.4; border-top: 1.5px solid #e3e7f1; }
+  .q:nth-child(odd) { border-right: 1.5px solid #e3e7f1; }
+  .q .qn { font-weight: 800; color: #5b6478; font-size: 8.67px; letter-spacing: .6px; }
+  .q .ans { display: inline-block; background: #0a7d4e; color: #fff; font-weight: 800;
+            border-radius: 4px; padding: 1.5px 7px; font-size: 10.17px; margin-top: 4px; }
+  .q .rat { color: #46506a; font-style: italic; margin-top: 3px; font-size: 8.76px; line-height: 1.33; }
+
+  /* ---------- trap ---------- */
+  .trap { border: 3px solid #c0142c; border-radius: 9px; padding: 9px 12px 10px; background: #fff5f6; }
+  .trap .h { font-size: 11.05px; font-weight: 800; color: #c0142c; letter-spacing: .4px; margin-bottom: 4px; }
+  .trap p { font-size: 9.9px; line-height: 1.45; color: #262e42; }
+  .trap b { color: #0d1220; }
+  .foot { margin-top: 6px; font-size: 7.78px; color: #98a0b2; text-align: center; line-height: 1.3; }
+</style>
+</head>
+<body>
+
+  <div class="hdr">
+    <h1>OPTIONS HEDGING → THE ONLY 4 ANSWERS</h1>
+    <div class="sub">Series 65 · every stock + option question reduces to one of these four boxes</div>
+  </div>
+
+  <!-- THE WHOLE SHEET IN TWO SENTENCES -->
+  <div class="core">
+    <div class="lbl">MEMORIZE THESE TWO LINES — EVERYTHING ELSE IS DERIVED</div>
+    <div class="line">
+      <span class="pos">LONG stock</span><span class="arrow">→</span>
+      <span class="prot">PUT protects</span><span class="dot">·</span><span class="pays">CALL pays</span>
+    </div>
+    <div class="line">
+      <span class="pos">SHORT stock</span><span class="arrow">→</span>
+      <span class="prot">CALL protects</span><span class="dot">·</span><span class="pays">PUT pays</span>
+    </div>
+  </div>
+
+  <!-- 2x2 -->
+  <div class="grid">
+    <div></div>
+    <div class="chdr b">BUY the option — PROTECT<small>you PAY premium · caps your loss</small></div>
+    <div class="chdr s">SELL the option — INCOME<small>you GET premium · that's your max gain</small></div>
+
+    <div class="rhdr">LONG<br>stock<em>you own it<br>risk = DROP</em></div>
+    <div class="cell buy">
+      <div class="act g">BUY A PUT</div>
+      <div class="nm">= PROTECTIVE PUT (insurance)</div>
+      <div class="ex">Put gains as the stock falls, offsetting the loss. Upside stays <b>unlimited</b>. Cue words: <b>“protect,” “hedge,” “limit downside,” “insurance.”</b></div>
+    </div>
+    <div class="cell sell">
+      <div class="act o">SELL A CALL</div>
+      <div class="nm">= COVERED CALL (income)</div>
+      <div class="ex">Premium is the income; “covered” because you hold the shares. Cost: capped above the strike. Cue words: <b>“income,” “profit from a flat/mild market.”</b></div>
+    </div>
+
+    <div class="rhdr">SHORT<br>stock<em>you borrowed+sold<br>risk = RISE</em></div>
+    <div class="cell buy">
+      <div class="act g">BUY A CALL</div>
+      <div class="nm">= caps a short's unlimited risk</div>
+      <div class="ex">Short stock loses as price rises — with no ceiling. The call locks a buy-back price. Cue words: <b>“short 100sh … protect against risk.”</b></div>
+    </div>
+    <div class="cell sell">
+      <div class="act o">SELL A PUT</div>
+      <div class="nm">= income, NOT protection</div>
+      <div class="ex">Collects premium but adds risk if the stock falls. If a question says <b>“protect”</b> and you are short, this is a distractor.</div>
+    </div>
+  </div>
+
+  <div class="why">
+    <div><b>WHY “protect” = BUY.</b> Buying gives you a <b>right</b>, and a buyer’s max loss is only the premium. Insurance costs money and caps damage — that is protection.</div>
+    <div><b>WHY “income” = SELL.</b> Selling collects the premium but takes on an <b>obligation</b>. Max gain = premium received. Cash now, risk later — that is income, not a hedge.</div>
+  </div>
+
+  <!-- NUMBERS -->
+  <div class="numsec">
+    <div class="lbl">THE NUMBERS THEY ASK FOR (buyer’s side — most tested)</div>
+    <div class="nums">
+      <div class="n"><div class="t">Buyer max LOSS</div><div class="f">= premium</div><div class="e">All you can lose, call or put.</div></div>
+      <div class="n"><div class="t">Seller max GAIN</div><div class="f">= premium</div><div class="e">All you can make.</div></div>
+      <div class="n"><div class="t">Long CALL max gain</div><div class="f">unlimited</div><div class="e">Stock can rise forever.</div></div>
+      <div class="n"><div class="t">Long PUT max gain</div><div class="f">strike − prem</div><div class="e">Stock can only fall to 0.</div></div>
+    </div>
+    <div class="be">
+      BREAKEVEN — <b>“call up, put down”</b>:&nbsp; CALL BE = strike <b>+</b> premium&nbsp;&nbsp;·&nbsp;&nbsp;PUT BE = strike <b>−</b> premium.
+      <br>Buy 50 call @ 3 → BE <b>53</b>, max loss 3, gain unlimited.&nbsp; Buy 50 put @ 2 → BE <b>48</b>, max loss 2, max gain 48.
+      <br>IN-the-money: call = stock <b>above</b> strike · put = stock <b>below</b> strike.&nbsp; Premium = intrinsic + time.&nbsp; Expires 3rd Friday. Options/futures = <b>derivatives</b>.
+    </div>
+  </div>
+
+  <!-- PROOF -->
+  <div class="proof">
+    <div class="cap">PROVE IT — REAL QUESTIONS FROM YOUR 130-Q PRACTICE FINAL (answer key wording)</div>
+    <div class="qs">
+      <div class="q">
+        <div class="qn">Q11</div> Investor is <b>long</b> 100sh XYZ, fears a near-term correction but stays bullish. Which may allow her to <b>profit</b>?
+        <div class="ans">SELL A CALL</div>
+        <div class="rat">“the option always follows the risk direction of the stock, to generate a profit (income), you would then sell the option”</div>
+      </div>
+      <div class="q">
+        <div class="qn">Q12</div> Investor who is <b>short</b> 100sh XYZ and would like to <b>protect against risk</b> would…
+        <div class="ans">BUY A CALL</div>
+        <div class="rat">“Same as above answer except to protect the stock you must buy the option”</div>
+      </div>
+      <div class="q">
+        <div class="qn">Q25</div> A customer has inquired about a <b>covered call</b>. Which option would you recommend?
+        <div class="ans">SELL A CALL</div>
+        <div class="rat">“Selling call options are a popular strategy in which to generate income when owning stock and are known as a covered call.”</div>
+      </div>
+      <div class="q">
+        <div class="qn">Q108</div> Option and future contracts are considered to be…
+        <div class="ans">DERIVATIVES</div>
+        <div class="rat">“Options and futures derive their value from other assets.”</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- THE TRAP -->
+  <div class="trap">
+    <div class="h">⚠️ THE HALF-RULE THAT WILL COST YOU Q11</div>
+    <p><b>“Long stock → buy put, short stock → buy call”</b> is only the <b>PROTECT</b> column. Q11 says long stock and asks how to <b>PROFIT</b> — the half-rule answers “buy a put,” but the key says <b>SELL A CALL</b>. So always read for the <b>verb</b> first: <b>protect / hedge / limit</b> → <span style="color:#0a7d4e;font-weight:800">BUY</span>. &nbsp;<b>income / profit / generate</b> → <span style="color:#b4560a;font-weight:800">SELL</span>. Position picks the <i>type</i>; the verb picks <i>buy or sell</i>.</p>
+  </div>
+
+  <div class="foot">
+    Sources: TestGeek Practice Final Q11/Q12/Q25/Q108 (verbatim, incl. rationales) · podcast_options_basics.txt · Exam Sept 9, 2026
+  </div>
+
+</body>
+</html>

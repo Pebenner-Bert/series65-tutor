@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Series 65 — Laws & Regs Visual Flows</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0f1117;--surface:#1a1d27;--surface2:#242736;--surface3:#2a2e42;--border:#2e3148;
+  --text:#e8eaf0;--text-muted:#8b8fa8;--accent:#4f8ef7;--accent2:#7c5cbf;
+  --green:#22c55e;--red:#ef4444;--yellow:#f59e0b;--orange:#f97316;--cyan:#22d3ee;
+  --radius:12px;--radius-lg:18px;
+}
+body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;min-height:100vh;font-size:15px;line-height:1.5;padding-bottom:60px}
+#header{background:var(--surface);border-bottom:1px solid var(--border);padding:14px 16px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;flex-wrap:wrap;gap:10px}
+#header h1{font-size:17px;font-weight:700;letter-spacing:-.3px;color:var(--accent)}
+#header h1 span{color:var(--text-muted);font-weight:400}
+#header a.back{color:var(--text-muted);text-decoration:none;font-size:13px;border:1px solid var(--border);border-radius:20px;padding:6px 14px;transition:all .2s}
+#header a.back:hover{border-color:var(--accent);color:var(--text)}
+.wrap{max-width:1000px;margin:0 auto;padding:20px 16px}
+.section-nav{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:22px}
+.section-nav a{background:var(--surface);border:1px solid var(--border);color:var(--text-muted);border-radius:20px;padding:7px 14px;font-size:13px;text-decoration:none;font-weight:500;transition:all .2s}
+.section-nav a:hover{border-color:var(--accent);color:var(--text)}
+h2.flow-title{font-size:20px;font-weight:800;margin:36px 0 6px;color:var(--text);display:flex;align-items:center;gap:8px}
+h2.flow-title:first-of-type{margin-top:0}
+.flow-sub{color:var(--text-muted);font-size:13px;margin-bottom:18px}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:18px;margin-bottom:16px}
+
+/* ── FLOWCHART (registration decision tree) ── */
+.flowchart{display:flex;flex-direction:column;align-items:center;gap:0;padding:10px 0}
+.fnode{background:var(--surface2);border:1.5px solid var(--border);border-radius:var(--radius);padding:12px 18px;text-align:center;font-size:14px;font-weight:600;max-width:320px;position:relative}
+.fnode.start{background:var(--accent);border-color:var(--accent);color:#fff;font-weight:700}
+.fnode.q{background:var(--surface3);border-color:var(--accent2);color:var(--text)}
+.fnode.end-sec{background:#14532d;border-color:var(--green);color:#86efac}
+.fnode.end-state{background:#1e3a5f;border-color:var(--accent);color:#93c5fd}
+.fnode.end-exempt{background:#450a0a;border-color:var(--red);color:#fca5a5}
+.farrow{color:var(--text-muted);font-size:20px;line-height:1;margin:2px 0}
+.fbranch{display:flex;gap:26px;justify-content:center;align-items:flex-start;flex-wrap:wrap;margin:6px 0}
+.fbranch-col{display:flex;flex-direction:column;align-items:center;gap:0}
+.fbranch-label{font-size:11px;color:var(--yellow);font-weight:700;text-transform:uppercase;letter-spacing:.4px;margin:4px 0}
+
+/* ── WHO REGISTERS WHERE TABLE ── */
+table.regtable{width:100%;border-collapse:collapse;font-size:13.5px;margin-top:4px}
+table.regtable th{background:var(--surface3);color:var(--cyan);text-align:left;padding:9px 12px;font-size:12px;text-transform:uppercase;letter-spacing:.3px;border-bottom:2px solid var(--border)}
+table.regtable td{padding:10px 12px;border-bottom:1px solid var(--border);vertical-align:top}
+table.regtable tr:last-child td{border-bottom:none}
+table.regtable .role{font-weight:700;color:var(--text)}
+.pill{display:inline-block;padding:3px 10px;border-radius:20px;font-size:11.5px;font-weight:700}
+.pill.sec{background:#1e3a5f;color:#93c5fd}
+.pill.state{background:#3f2d5c;color:#c4b5fd}
+.pill.both{background:#713f12;color:#fcd34d}
+
+/* ── CAN / CANNOT GRID ── */
+.cancannot{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:6px}
+@media(max-width:640px){.cancannot{grid-template-columns:1fr}}
+.cc-col{border-radius:var(--radius);padding:14px 16px;border:1.5px solid var(--border)}
+.cc-col.can{background:rgba(34,197,94,.08);border-color:#22c55e}
+.cc-col.cannot{background:rgba(239,68,68,.08);border-color:#ef4444}
+.cc-col h3{font-size:14px;font-weight:800;margin-bottom:10px;display:flex;align-items:center;gap:6px}
+.cc-col.can h3{color:var(--green)}
+.cc-col.cannot h3{color:var(--red)}
+.cc-col ul{list-style:none;padding:0;display:flex;flex-direction:column;gap:8px}
+.cc-col li{font-size:13.5px;padding-left:20px;position:relative;line-height:1.45}
+.cc-col.can li::before{content:"✓";position:absolute;left:0;color:var(--green);font-weight:800}
+.cc-col.cannot li::before{content:"✕";position:absolute;left:0;color:var(--red);font-weight:800}
+
+/* ── COMPARISON: fiduciary vs suitability ── */
+.vscomp{display:grid;grid-template-columns:1fr auto 1fr;gap:0;align-items:stretch;margin-top:6px}
+@media(max-width:640px){.vscomp{grid-template-columns:1fr}}
+.vs-side{background:var(--surface2);border-radius:var(--radius);padding:16px}
+.vs-side.left{border:1.5px solid var(--accent)}
+.vs-side.right{border:1.5px solid var(--accent2)}
+.vs-mid{display:flex;align-items:center;justify-content:center;padding:0 16px;font-weight:800;color:var(--text-muted);font-size:13px}
+@media(max-width:640px){.vs-mid{padding:10px 0}}
+.vs-side h4{font-size:15px;font-weight:800;margin-bottom:8px}
+.vs-side.left h4{color:var(--accent)}
+.vs-side.right h4{color:var(--accent2)}
+.vs-side .tag{display:inline-block;font-size:11px;font-weight:700;padding:2px 9px;border-radius:12px;margin-bottom:8px}
+.vs-side.left .tag{background:#1e3a5f;color:#93c5fd}
+.vs-side.right .tag{background:#3f2d5c;color:#c4b5fd}
+.vs-side ul{margin-top:8px;padding-left:0;list-style:none;display:flex;flex-direction:column;gap:6px}
+.vs-side li{font-size:13.5px;padding-left:16px;position:relative}
+.vs-side li::before{content:"—";position:absolute;left:0;color:var(--text-muted)}
+
+/* ── TIMELINE (exam-day / civil liability windows) ── */
+.timeline{display:flex;overflow-x:auto;gap:0;padding:20px 4px 10px;margin-top:6px}
+.tl-step{flex:0 0 auto;min-width:150px;text-align:center;position:relative;padding:0 6px}
+.tl-dot{width:14px;height:14px;border-radius:50%;background:var(--accent);margin:0 auto 10px;border:3px solid var(--bg);box-shadow:0 0 0 2px var(--accent)}
+.tl-step:not(:last-child)::after{content:"";position:absolute;top:6px;left:calc(50% + 14px);right:calc(-50% + 14px);height:2px;background:var(--border)}
+.tl-label{font-size:12px;font-weight:700;color:var(--text);margin-bottom:3px}
+.tl-detail{font-size:11.5px;color:var(--text-muted);line-height:1.4}
+
+.hook-box{background:rgba(124,45,18,.15);border:1px solid #7c2d12;border-radius:10px;padding:10px 14px;margin-top:14px;font-size:13px;color:#fdba74}
+.hook-box b{color:#fed7aa}
+</style>
+</head>
+<body>
+<div id="header">
+  <h1>Series 65 <span>· Laws &amp; Regs Visual Flows</span></h1>
+  <a class="back" href="index.html">← Back to Tutor</a>
+</div>
+
+<div class="wrap">
+
+<div class="section-nav">
+  <a href="#reg-flow">🗺️ IA Registration Flow</a>
+  <a href="#who-registers">🧾 Who Registers Where</a>
+  <a href="#fid-vs-suit">⚖️ Fiduciary vs Suitability</a>
+  <a href="#sec-reg-flow">📜 Securities Registration Flow</a>
+  <a href="#can-cannot">🚦 Can / Cannot Do</a>
+  <a href="#timeline">⏱️ Civil Liability Timeline</a>
+</div>
+
+<!-- ══════════ 1. IA REGISTRATION DECISION TREE ══════════ -->
+<h2 class="flow-title" id="reg-flow">🗺️ Investment Adviser Registration — Decision Flow</h2>
+<div class="flow-sub">Walk the decision tree top to bottom to find out where an IA must register.</div>
+<div class="card">
+  <div class="flowchart">
+    <div class="fnode start">Person/firm gives investment advice for compensation</div>
+    <div class="farrow">↓</div>
+    <div class="fnode q">Does an exemption apply?<br><span style="font-weight:400;font-size:12.5px;color:var(--text-muted)">No retail clients (only institutions) · intrastate with &lt;6 clients/12mo · advises only insurance companies</span></div>
+    <div class="farrow">↓</div>
+    <div class="fbranch">
+      <div class="fbranch-col">
+        <div class="fbranch-label">Yes → exempt</div>
+        <div class="fnode end-exempt">No registration required</div>
+      </div>
+      <div class="fbranch-col">
+        <div class="fbranch-label">No → check AUM</div>
+        <div class="fnode q">Assets Under Management (AUM)?</div>
+        <div class="farrow">↓</div>
+        <div class="fbranch">
+          <div class="fbranch-col">
+            <div class="fbranch-label">&lt; $100M</div>
+            <div class="fnode end-state">Register with STATE</div>
+          </div>
+          <div class="fbranch-col">
+            <div class="fbranch-label">$100M–$110M</div>
+            <div class="fnode q" style="background:#713f12;border-color:var(--yellow);color:#fcd34d">Gray zone —<br>may choose SEC or state</div>
+          </div>
+          <div class="fbranch-col">
+            <div class="fbranch-label">≥ $110M</div>
+            <div class="fnode end-sec">Register with SEC</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="farrow">↓</div>
+    <div class="fnode q">Also true regardless of the above:<br><span style="font-weight:400;font-size:12.5px;color:var(--text-muted)">Advises a registered investment company (mutual fund) → always SEC. Multi-state (15+ states) → always SEC.</span></div>
+  </div>
+  <div class="hook-box"><b>🧠 Exam trap:</b> the <b>IAR</b> (individual rep) ALWAYS registers with the <b>state</b> — even if their IA firm is SEC-registered. Only the firm-level registration follows the AUM chart above.</div>
+</div>
+
+<!-- ══════════ 2. WHO REGISTERS WHERE TABLE ══════════ -->
+<h2 class="flow-title" id="who-registers">🧾 Who Registers Where</h2>
+<div class="flow-sub">The 5 roles the exam loves to mix up.</div>
+<div class="card">
+  <table class="regtable">
+    <tr><th>Role</th><th>What they do</th><th>Registers with</th></tr>
+    <tr>
+      <td class="role">Investment Adviser (IA)</td>
+      <td>Firm/person giving investment advice for compensation</td>
+      <td><span class="pill both">SEC or State</span> (by AUM — see flow above)</td>
+    </tr>
+    <tr>
+      <td class="role">Investment Adviser Rep (IAR)</td>
+      <td>Individual who works for an IA and gives the advice</td>
+      <td><span class="pill state">Always State</span></td>
+    </tr>
+    <tr>
+      <td class="role">Broker-Dealer (BD)</td>
+      <td>Firm that buys/sells securities for clients or its own account</td>
+      <td><span class="pill both">SEC + State</span> (BDs register both, plus FINRA membership)</td>
+    </tr>
+    <tr>
+      <td class="role">Agent (Registered Rep)</td>
+      <td>Individual who works for a BD, executes trades</td>
+      <td><span class="pill state">State</span> (per state they do business in)</td>
+    </tr>
+    <tr>
+      <td class="role">Issuer</td>
+      <td>Company that issues the securities being sold</td>
+      <td>Not a BD or agent — <em>the security itself</em> may need registration, not the issuer as a person</td>
+    </tr>
+  </table>
+  <div class="hook-box"><b>🧠 Memory hook:</b> "IA firm follows the money (AUM), IAR/Agent always follow the state." If you see "individual" in the question stem, the answer is almost always <b>state</b>.</div>
+</div>
+
+<!-- ══════════ 3. FIDUCIARY VS SUITABILITY ══════════ -->
+<h2 class="flow-title" id="fid-vs-suit">⚖️ Fiduciary Duty (IA) vs Suitability (BD)</h2>
+<div class="flow-sub">The single most-tested contrast in the Laws &amp; Ethics section.</div>
+<div class="card">
+  <div class="vscomp">
+    <div class="vs-side left">
+      <span class="tag">HIGHER STANDARD</span>
+      <h4>Fiduciary Duty — owed by IAs / IARs</h4>
+      <ul>
+        <li>Must act in client's <strong>best interest</strong>, always</li>
+        <li><strong>Duty of loyalty</strong> — client interests first, disclose/avoid conflicts</li>
+        <li><strong>Duty of care</strong> — reasonable care + competence</li>
+        <li>Must disclose <strong>all material conflicts</strong> (comp, affiliations)</li>
+        <li>Ongoing duty — ​ ​ ​ applies for life of the advisory relationship</li>
+      </ul>
+    </div>
+    <div class="vs-mid">VS</div>
+    <div class="vs-side right">
+      <span class="tag">LOWER STANDARD</span>
+      <h4>Suitability — owed by BDs / Agents</h4>
+      <ul>
+        <li>Recommendation must be <strong>suitable</strong> for the client — not necessarily "best"</li>
+        <li>Based on client's investment profile (age, objectives, risk tolerance, time horizon)</li>
+        <li>No ongoing monitoring duty required after the trade</li>
+        <li>Conflicts don't have to be as fully disclosed as under fiduciary duty</li>
+        <li>Transaction-based — ​ ​ ​ applies at point of each recommendation</li>
+      </ul>
+    </div>
+  </div>
+  <div class="hook-box"><b>🧠 Exam trap:</b> if the question asks what standard applies to an <b>IA</b> → fiduciary. If it's a <b>BD/agent</b> recommending a trade → suitability. "Best interest" language = fiduciary/IA. "Suitable" language = BD/agent.</div>
+</div>
+
+<!-- ══════════ 4. SECURITIES REGISTRATION FLOW ══════════ -->
+<h2 class="flow-title" id="sec-reg-flow">📜 Securities Registration — Decision Flow</h2>
+<div class="flow-sub">Is the SECURITY exempt, the TRANSACTION exempt, or does it need full state registration?</div>
+<div class="card">
+  <div class="flowchart">
+    <div class="fnode start">A security is being offered/sold</div>
+    <div class="farrow">↓</div>
+    <div class="fnode q">Is it a Federal Covered Security?<br><span style="font-weight:400;font-size:12.5px;color:var(--text-muted)">NYSE/NASDAQ-listed, registered mutual funds, most IPOs</span></div>
+    <div class="farrow">↓</div>
+    <div class="fbranch">
+      <div class="fbranch-col">
+        <div class="fbranch-label">Yes</div>
+        <div class="fnode end-sec">Exempt from state registration<br><span style="font-weight:400;font-size:11.5px">(state can still require notice filing + fee)</span></div>
+      </div>
+      <div class="fbranch-col">
+        <div class="fbranch-label">No → next question</div>
+        <div class="fnode q">Is the SECURITY itself exempt?<br><span style="font-weight:400;font-size:12.5px;color:var(--text-muted)">US/muni gov't bonds, bank securities, insurance policies, commercial paper &lt;270 days</span></div>
+        <div class="farrow">↓</div>
+        <div class="fbranch">
+          <div class="fbranch-col">
+            <div class="fbranch-label">Yes</div>
+            <div class="fnode end-exempt">No registration needed</div>
+          </div>
+          <div class="fbranch-col">
+            <div class="fbranch-label">No → check the TRANSACTION</div>
+            <div class="fnode q">Is the TRANSACTION exempt?<br><span style="font-weight:400;font-size:12.5px;color:var(--text-muted)">Private placement, isolated non-issuer sale, unsolicited order, institutional buyer</span></div>
+            <div class="farrow">↓</div>
+            <div class="fbranch">
+              <div class="fbranch-col">
+                <div class="fbranch-label">Yes</div>
+                <div class="fnode end-exempt">This sale is exempt<br><span style="font-weight:400;font-size:11.5px">(security may still be non-exempt for OTHER sales)</span></div>
+              </div>
+              <div class="fbranch-col">
+                <div class="fbranch-label">No</div>
+                <div class="fnode end-state">Must register with the state:<br>Notification, Coordination, or Qualification</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="hook-box"><b>🧠 Exam trap:</b> "Exempt security" ≠ "exempt transaction." A perfectly ordinary (non-exempt) security can still be sold via an exempt <em>transaction</em> (e.g., an isolated non-issuer sale) — the specific SALE is exempt, not the security forever.</div>
+</div>
+
+<!-- ══════════ 5. CAN / CANNOT DO GRID ══════════ -->
+<h2 class="flow-title" id="can-cannot">🚦 What an Adviser/Agent CAN and CANNOT Do</h2>
+<div class="flow-sub">Prohibited practices vs. permitted practices, side by side.</div>
+<div class="card">
+  <div class="cancannot">
+    <div class="cc-col can">
+      <h3>✅ CAN DO</h3>
+      <ul>
+        <li>Disclose a conflict of interest and proceed with client's informed consent</li>
+        <li>Charge <strong>performance fees</strong> — only to qualified clients (≥$1.1M AUM w/ adviser or ≥$2.2M net worth)</li>
+        <li>Use <strong>soft dollars</strong> (pay more in commissions for research) if it benefits clients and is disclosed</li>
+        <li>Trade on a <strong>discretionary</strong> account without asking every time — if written authorization is on file</li>
+        <li><strong>Advise against</strong> a client's bad decision — client still has final say (it's their money)</li>
+        <li>Refer clients via a <strong>solicitor</strong> — if solicitor discloses the referral fee + delivers the IA's brochure</li>
+        <li>Seek <strong>best execution</strong> — doesn't have to be the cheapest broker, just the best overall outcome</li>
+      </ul>
+    </div>
+    <div class="cc-col cannot">
+      <h3>🚫 CANNOT DO</h3>
+      <ul>
+        <li><strong>Guarantee returns</strong> or guarantee against loss — always prohibited, no exceptions</li>
+        <li><strong>Trade without authorization</strong> in a non-discretionary account</li>
+        <li><strong>Churn</strong> — excessive trading just to generate commissions</li>
+        <li><strong>Front-run</strong> — trade for own account ahead of a big client order</li>
+        <li><strong>Insider trade</strong> — trade on material, non-public information</li>
+        <li><strong>Sell away</strong> — sell securities not approved by the agent's own firm</li>
+        <li><strong>Commingle</strong> — mix client funds/securities with firm or personal funds</li>
+        <li><strong>Charge performance fees to retail clients</strong> (non-qualified)</li>
+        <li><strong>Assign the advisory contract</strong> to another adviser without client consent</li>
+      </ul>
+    </div>
+  </div>
+  <div class="hook-box"><b>🧠 Exam trap:</b> disclosure fixes MOST conflicts — but it never makes an illegal act (insider trading, guaranteeing returns) legal. If the question stem includes "guarantee," the answer is prohibited, full stop.</div>
+</div>
+
+<!-- ══════════ 6. CIVIL LIABILITY TIMELINE ══════════ -->
+<h2 class="flow-title" id="timeline">⏱️ Civil Liability & Recordkeeping Timelines</h2>
+<div class="flow-sub">The clock-based numbers the exam loves to test.</div>
+<div class="card">
+  <div class="timeline">
+    <div class="tl-step">
+      <div class="tl-dot"></div>
+      <div class="tl-label">Violation occurs</div>
+      <div class="tl-detail">Uniform Securities Act violation happens (e.g. unsuitable sale, fraud)</div>
+    </div>
+    <div class="tl-step">
+      <div class="tl-dot"></div>
+      <div class="tl-label">2 years</div>
+      <div class="tl-detail">Client must sue within 2 years <em>after discovering</em> the violation</div>
+    </div>
+    <div class="tl-step">
+      <div class="tl-dot"></div>
+      <div class="tl-label">3 years</div>
+      <div class="tl-detail">...or within 3 years of the violation itself — whichever comes FIRST</div>
+    </div>
+    <div class="tl-step">
+      <div class="tl-dot"></div>
+      <div class="tl-label">Remedy</div>
+      <div class="tl-detail">Client recovers purchase price + interest, minus any income received</div>
+    </div>
+  </div>
+  <div class="timeline">
+    <div class="tl-step">
+      <div class="tl-dot" style="background:var(--accent2);box-shadow:0 0 0 2px var(--accent2)"></div>
+      <div class="tl-label">Records created</div>
+      <div class="tl-detail">IA/BD generates client records, contracts, communications</div>
+    </div>
+    <div class="tl-step">
+      <div class="tl-dot" style="background:var(--accent2);box-shadow:0 0 0 2px var(--accent2)"></div>
+      <div class="tl-label">3 years easily accessible</div>
+      <div class="tl-detail">IA records must be readily accessible for the first 3 years</div>
+    </div>
+    <div class="tl-step">
+      <div class="tl-dot" style="background:var(--accent2);box-shadow:0 0 0 2px var(--accent2)"></div>
+      <div class="tl-label">5 years total (IA) / 3 years (BD)</div>
+      <div class="tl-detail">Total retention: IA = 5 years, BD = 3 years</div>
+    </div>
+  </div>
+  <div class="hook-box"><b>🧠 Memory hook:</b> "2 knows, 3 grows" — 2 years after you KNOW, 3 years after it GREW (happened) — whichever is sooner caps the client's right to sue. Recordkeeping: IA "5-3" (5 total, 3 easily accessible), BD flat 3.</div>
+</div>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Series 65 — Bond Portfolio Strategies Visual Flows</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0f1117;--surface:#1a1d27;--surface2:#242736;--surface3:#2a2e42;--border:#2e3148;
+  --text:#e8eaf0;--text-muted:#8b8fa8;--accent:#4f8ef7;--accent2:#7c5cbf;
+  --green:#22c55e;--red:#ef4444;--yellow:#f59e0b;--orange:#f97316;--cyan:#22d3ee;
+  --radius:12px;--radius-lg:18px;
+}
+body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;min-height:100vh;font-size:15px;line-height:1.5;padding-bottom:60px}
+#header{background:var(--surface);border-bottom:1px solid var(--border);padding:14px 16px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;flex-wrap:wrap;gap:10px}
+#header h1{font-size:17px;font-weight:700;letter-spacing:-.3px;color:var(--accent)}
+#header h1 span{color:var(--text-muted);font-weight:400}
+#header a.back{color:var(--text-muted);text-decoration:none;font-size:13px;border:1px solid var(--border);border-radius:20px;padding:6px 14px;transition:all .2s}
+#header a.back:hover{border-color:var(--accent);color:var(--text)}
+.wrap{max-width:1000px;margin:0 auto;padding:20px 16px}
+.section-nav{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:22px}
+.section-nav a{background:var(--surface);border:1px solid var(--border);color:var(--text-muted);border-radius:20px;padding:7px 14px;font-size:13px;text-decoration:none;font-weight:500;transition:all .2s}
+.section-nav a:hover{border-color:var(--accent);color:var(--text)}
+h2.flow-title{font-size:20px;font-weight:800;margin:36px 0 6px;color:var(--text);display:flex;align-items:center;gap:8px}
+h2.flow-title:first-of-type{margin-top:0}
+.flow-sub{color:var(--text-muted);font-size:13px;margin-bottom:18px}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:18px;margin-bottom:16px}
+
+/* FLOWCHART */
+.flowchart{display:flex;flex-direction:column;align-items:center;gap:0;padding:10px 0}
+.fnode{background:var(--surface2);border:1.5px solid var(--border);border-radius:var(--radius);padding:12px 18px;text-align:center;font-size:14px;font-weight:600;max-width:340px;position:relative}
+.fnode.start{background:var(--accent);border-color:var(--accent);color:#fff;font-weight:700}
+.fnode.q{background:var(--surface3);border-color:var(--accent2);color:var(--text)}
+.fnode.end-a{background:#14532d;border-color:var(--green);color:#86efac}
+.fnode.end-b{background:#1e3a5f;border-color:var(--accent);color:#93c5fd}
+.fnode.end-c{background:#450a0a;border-color:var(--red);color:#fca5a5}
+.fnode.end-y{background:#713f12;border-color:var(--yellow);color:#fcd34d}
+.farrow{color:var(--text-muted);font-size:20px;line-height:1;margin:2px 0}
+.fbranch{display:flex;gap:22px;justify-content:center;align-items:flex-start;flex-wrap:wrap;margin:6px 0}
+.fbranch-col{display:flex;flex-direction:column;align-items:center;gap:0}
+.fbranch-label{font-size:11px;color:var(--yellow);font-weight:700;text-transform:uppercase;letter-spacing:.4px;margin:4px 0}
+
+/* MATURITY LADDER VISUALS */
+.maturity-viz{display:flex;align-items:flex-end;justify-content:center;gap:6px;padding:20px 4px 6px;flex-wrap:wrap}
+.mbar{width:34px;border-radius:4px 4px 0 0;position:relative;display:flex;align-items:flex-end;justify-content:center}
+.mbar span{position:absolute;bottom:-20px;font-size:10px;color:var(--text-muted);white-space:nowrap}
+.mbar-fill{width:100%;border-radius:4px 4px 0 0}
+
+/* TABLE */
+table.regtable{width:100%;border-collapse:collapse;font-size:13.5px;margin-top:4px}
+table.regtable th{background:var(--surface3);color:var(--cyan);text-align:left;padding:9px 12px;font-size:12px;text-transform:uppercase;letter-spacing:.3px;border-bottom:2px solid var(--border)}
+table.regtable td{padding:10px 12px;border-bottom:1px solid var(--border);vertical-align:top}
+table.regtable tr:last-child td{border-bottom:none}
+table.regtable .role{font-weight:700;color:var(--text)}
+.pill{display:inline-block;padding:3px 10px;border-radius:20px;font-size:11.5px;font-weight:700}
+.pill.sec{background:#1e3a5f;color:#93c5fd}
+.pill.state{background:#3f2d5c;color:#c4b5fd}
+.pill.both{background:#713f12;color:#fcd34d}
+.pill.green{background:#14532d;color:#86efac}
+.pill.red{background:#450a0a;color:#fca5a5}
+
+/* CAN/CANNOT reused as BEST-FOR / WATCH-OUT */
+.cancannot{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:6px}
+@media(max-width:640px){.cancannot{grid-template-columns:1fr}}
+.cc-col{border-radius:var(--radius);padding:14px 16px;border:1.5px solid var(--border)}
+.cc-col.can{background:rgba(34,197,94,.08);border-color:#22c55e}
+.cc-col.cannot{background:rgba(239,68,68,.08);border-color:#ef4444}
+.cc-col h3{font-size:14px;font-weight:800;margin-bottom:10px;display:flex;align-items:center;gap:6px}
+.cc-col.can h3{color:var(--green)}
+.cc-col.cannot h3{color:var(--red)}
+.cc-col ul{list-style:none;padding:0;display:flex;flex-direction:column;gap:8px}
+.cc-col li{font-size:13.5px;padding-left:20px;position:relative;line-height:1.45}
+.cc-col.can li::before{content:"✓";position:absolute;left:0;color:var(--green);font-weight:800}
+.cc-col.cannot li::before{content:"⚠";position:absolute;left:0;color:var(--yellow);font-weight:800}
+
+.hook-box{background:rgba(124,45,18,.15);border:1px solid #7c2d12;border-radius:10px;padding:10px 14px;margin-top:14px;font-size:13px;color:#fdba74}
+.hook-box b{color:#fed7aa}
+
+/* strategy grid cards */
+.strat-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:6px}
+@media(max-width:640px){.strat-grid{grid-template-columns:1fr}}
+.strat-card{background:var(--surface2);border:1.5px solid var(--border);border-radius:var(--radius);padding:14px 16px}
+.strat-card h4{font-size:15px;font-weight:800;margin-bottom:6px;display:flex;align-items:center;gap:6px}
+.strat-card .best{font-size:11px;font-weight:700;color:var(--green);margin-bottom:8px;text-transform:uppercase;letter-spacing:.3px}
+.strat-card p{font-size:13px;color:var(--text-muted);line-height:1.5}
+</style>
+</head>
+<body>
+<div id="header">
+  <h1>Series 65 <span>· Bond Portfolio Strategies</span></h1>
+  <a class="back" href="index.html">← Back to Tutor</a>
+</div>
+
+<div class="wrap">
+
+<div class="section-nav">
+  <a href="#decision-flow">🧭 Which Strategy Fits?</a>
+  <a href="#visual-shapes">📊 Maturity Shapes at a Glance</a>
+  <a href="#compare-table">📋 Side-by-Side Comparison</a>
+  <a href="#rate-scenarios">📈 Rate Scenario Matrix</a>
+  <a href="#pitfalls">⚠️ Watch-Outs</a>
+</div>
+
+<!-- ══════════ 1. DECISION FLOW ══════════ -->
+<h2 class="flow-title" id="decision-flow">🧭 Which Bond Strategy Fits the Client's Goal?</h2>
+<div class="flow-sub">Walk top to bottom — match the client's rate view + cash-flow need to a strategy.</div>
+<div class="card">
+  <div class="flowchart">
+    <div class="fnode start">Client holds a fixed-income portfolio</div>
+    <div class="farrow">↓</div>
+    <div class="fnode q">What's the primary goal?</div>
+    <div class="farrow">↓</div>
+    <div class="fbranch">
+      <div class="fbranch-col">
+        <div class="fbranch-label">Regular reinvestment + liquidity</div>
+        <div class="fnode end-a">Laddering<br><span style="font-weight:400;font-size:11.5px">Stagger maturities evenly → principal returns periodically to reinvest at current rates</span></div>
+      </div>
+      <div class="fbranch-col">
+        <div class="fbranch-label">Flexibility, both short + long ends</div>
+        <div class="fnode end-b">Barbell<br><span style="font-weight:400;font-size:11.5px">Hold only short-term + long-term (no middle) → liquidity from short end, yield from long end</span></div>
+      </div>
+      <div class="fbranch-col">
+        <div class="fbranch-label">Maximize yield at one known date</div>
+        <div class="fnode end-y">Bullet<br><span style="font-weight:400;font-size:11.5px">Concentrate maturities around a single target date → funds a specific future liability</span></div>
+      </div>
+      <div class="fbranch-col">
+        <div class="fbranch-label">Guarantee a target value regardless of rates</div>
+        <div class="fnode end-c">Immunization<br><span style="font-weight:400;font-size:11.5px">Match portfolio duration to the liability's time horizon → price risk and reinvestment risk offset</span></div>
+      </div>
+    </div>
+  </div>
+  <div class="hook-box"><b>🧠 The exam's favorite tell:</b> "expects rates to rise/fall and wants principal returned periodically to reinvest" → almost always <b>laddering</b>. "Matches a single future date/liability" → <b>bullet</b> or <b>immunization</b> depending on whether cash-flow timing matters (bullet) or only the end value matters (immunization).</div>
+</div>
+
+<!-- ══════════ 2. VISUAL MATURITY SHAPES ══════════ -->
+<h2 class="flow-title" id="visual-shapes">📊 What Each Strategy Looks Like on a Maturity Timeline</h2>
+<div class="flow-sub">Bar height = $ amount invested at that maturity. This is the picture the exam wants in your head.</div>
+
+<div class="card">
+  <h4 style="margin-bottom:4px;color:var(--green)">Laddering — even spread across maturities</h4>
+  <div class="maturity-viz">
+    <div class="mbar" style="height:60px"><div class="mbar-fill" style="height:100%;background:var(--green)"></div><span>1yr</span></div>
+    <div class="mbar" style="height:60px"><div class="mbar-fill" style="height:100%;background:var(--green)"></div><span>3yr</span></div>
+    <div class="mbar" style="height:60px"><div class="mbar-fill" style="height:100%;background:var(--green)"></div><span>5yr</span></div>
+    <div class="mbar" style="height:60px"><div class="mbar-fill" style="height:100%;background:var(--green)"></div><span>7yr</span></div>
+    <div class="mbar" style="height:60px"><div class="mbar-fill" style="height:100%;background:var(--green)"></div><span>10yr</span></div>
+  </div>
+  <p style="text-align:center;font-size:12px;color:var(--text-muted);margin-top:26px">Equal $ at each rung — a bond matures every year or two, giving steady liquidity + reinvestment at current rates</p>
+</div>
+
+<div class="card">
+  <h4 style="margin-bottom:4px;color:var(--accent)">Barbell — concentrated at both ends, nothing in the middle</h4>
+  <div class="maturity-viz">
+    <div class="mbar" style="height:70px"><div class="mbar-fill" style="height:100%;background:var(--accent)"></div><span>1yr</span></div>
+    <div class="mbar" style="height:70px"><div class="mbar-fill" style="height:100%;background:var(--accent)"></div><span>2yr</span></div>
+    <div class="mbar" style="height:10px;opacity:.25"><div class="mbar-fill" style="height:100%;background:var(--border)"></div><span>5yr</span></div>
+    <div class="mbar" style="height:10px;opacity:.25"><div class="mbar-fill" style="height:100%;background:var(--border)"></div><span>7yr</span></div>
+    <div class="mbar" style="height:70px"><div class="mbar-fill" style="height:100%;background:var(--accent)"></div><span>15yr</span></div>
+    <div class="mbar" style="height:70px"><div class="mbar-fill" style="height:100%;background:var(--accent)"></div><span>20yr</span></div>
+  </div>
+  <p style="text-align:center;font-size:12px;color:var(--text-muted);margin-top:26px">Heavy weight short + long, nothing in the middle — short end covers liquidity, long end covers yield</p>
+</div>
+
+<div class="card">
+  <h4 style="margin-bottom:4px;color:var(--yellow)">Bullet — concentrated at a single target date</h4>
+  <div class="maturity-viz">
+    <div class="mbar" style="height:10px;opacity:.25"><div class="mbar-fill" style="height:100%;background:var(--border)"></div><span>1yr</span></div>
+    <div class="mbar" style="height:10px;opacity:.25"><div class="mbar-fill" style="height:100%;background:var(--border)"></div><span>3yr</span></div>
+    <div class="mbar" style="height:75px"><div class="mbar-fill" style="height:100%;background:var(--yellow)"></div><span>5yr TARGET</span></div>
+    <div class="mbar" style="height:10px;opacity:.25"><div class="mbar-fill" style="height:100%;background:var(--border)"></div><span>7yr</span></div>
+    <div class="mbar" style="height:10px;opacity:.25"><div class="mbar-fill" style="height:100%;background:var(--border)"></div><span>10yr</span></div>
+  </div>
+  <p style="text-align:center;font-size:12px;color:var(--text-muted);margin-top:26px">All (or nearly all) maturities cluster around one date — built to fund one known future need (e.g. tuition, a bond maturing when a liability is due)</p>
+</div>
+
+<!-- ══════════ 3. COMPARISON TABLE ══════════ -->
+<h2 class="flow-title" id="compare-table">📋 Side-by-Side Comparison</h2>
+<div class="flow-sub">The four strategies compared on the traits the exam asks about.</div>
+<div class="card">
+  <table class="regtable">
+    <tr><th>Strategy</th><th>Maturity Structure</th><th>Best For</th><th>Main Risk Managed</th></tr>
+    <tr>
+      <td class="role">Bullet</td>
+      <td>All maturities cluster around one target date</td>
+      <td>Funding a single known future liability (tuition, balloon payment)</td>
+      <td>Ensures cash is available exactly when needed — but concentrates <span class="pill red">reinvestment risk</span> at one point</td>
+    </tr>
+    <tr>
+      <td class="role">Barbell</td>
+      <td>Only short + long maturities; nothing in the middle</td>
+      <td>Wanting liquidity (short end) AND higher yield (long end) simultaneously</td>
+      <td>Balances liquidity vs. yield, but less flexible to changing rate views than a ladder</td>
+    </tr>
+    <tr>
+      <td class="role">Laddering</td>
+      <td>Even spread of maturities across the full range</td>
+      <td>Ongoing income + steady reinvestment opportunity as rates move</td>
+      <td><span class="pill green">Reinvestment risk</span> — smooths it out by never having all bonds mature at once</td>
+    </tr>
+    <tr>
+      <td class="role">Immunization</td>
+      <td>Duration of portfolio matched to duration of the liability</td>
+      <td>Guaranteeing a target future value regardless of rate moves (pension/liability funding)</td>
+      <td>Offsets <span class="pill both">price risk vs. reinvestment risk</span> — when one hurts, the other helps, netting out</td>
+    </tr>
+  </table>
+</div>
+
+<!-- ══════════ 4. RATE SCENARIO MATRIX ══════════ -->
+<h2 class="flow-title" id="rate-scenarios">📈 How Each Strategy Behaves by Rate Scenario</h2>
+<div class="flow-sub">This is exactly the kind of "which strategy wins if rates do X" question the exam asks.</div>
+<div class="card">
+  <div class="strat-grid">
+    <div class="strat-card">
+      <h4>📉 Rates Expected to FALL</h4>
+      <div class="best">Best fit: Bullet or long Barbell leg</div>
+      <p>Lock in today's higher rates for longer — you don't want bonds maturing soon and forcing reinvestment at the new, lower rates. Laddering still reinvests some proceeds at the worse rate each rung.</p>
+    </div>
+    <div class="strat-card">
+      <h4>📈 Rates Expected to RISE</h4>
+      <div class="best">Best fit: Laddering</div>
+      <p>You want principal returned periodically so it can be reinvested at the new, higher rates — this is the exact scenario in the sample question above. Long bullets/barbells lock you out of the upside.</p>
+    </div>
+    <div class="strat-card">
+      <h4>❓ Rate Direction UNCERTAIN</h4>
+      <div class="best">Best fit: Laddering or Barbell</div>
+      <p>Both diversify across the curve so no single rate move dominates the outcome. Ladders smooth reinvestment risk continuously; barbells hedge by owning both extremes.</p>
+    </div>
+    <div class="strat-card">
+      <h4>🎯 Must Fund a Known Future Liability</h4>
+      <div class="best">Best fit: Immunization (or Bullet)</div>
+      <p>When the goal is a guaranteed dollar amount at a specific date regardless of what rates do in between, duration-matching (immunization) is the textbook answer; a bullet works when cash-flow timing (not just ending value) matters.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ 5. WATCH-OUTS ══════════ -->
+<h2 class="flow-title" id="pitfalls">⚠️ Common Exam Traps</h2>
+<div class="card">
+  <div class="cancannot">
+    <div class="cc-col can">
+      <h3>✅ Correctly Match These Clues</h3>
+      <ul>
+        <li>"Concerned about price loss on long bonds + rates rising modestly + wants liquidity/reinvestment" → <strong>Laddering</strong></li>
+        <li>"Wants some liquidity AND higher long-term yield, comfortable with a gap in the middle" → <strong>Barbell</strong></li>
+        <li>"Needs $X at a specific date for a specific purpose" → <strong>Bullet</strong></li>
+        <li>"Must guarantee a target portfolio value against a future liability no matter what rates do" → <strong>Immunization</strong> (duration matching)</li>
+      </ul>
+    </div>
+    <div class="cc-col cannot">
+      <h3>⚠️ Don't Confuse These</h3>
+      <ul>
+        <li>Immunization is NOT the same as a bullet — immunization matches <em>duration</em> to a horizon and can hold a mix of maturities; a bullet clusters actual maturities at one date</li>
+        <li>A ladder does NOT maximize yield at any one point — it trades peak yield for steady, predictable reinvestment</li>
+        <li>A barbell is NOT the same as a ladder — barbell = concentrated at 2 ends; ladder = spread evenly across ALL points</li>
+        <li>Rising rates do NOT favor a bullet/barbell's long end — long-duration bonds lose the most value when rates rise</li>
+      </ul>
+    </div>
+  </div>
+  <div class="hook-box"><b>🧠 Retention hook:</b> "LADDER = liquidity via periodic reinvestment. BARBELL = both ends, gap in the middle. BULLET = one date, one purpose. IMMUNIZED = duration-matched, rate-move-proof for a target value."</div>
+</div>
+
+</div>
+</body>
+</html>

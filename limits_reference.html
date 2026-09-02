@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Series 65 — Contribution Limits Reference (2026)</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0f1117;--surface:#1a1d27;--surface2:#242736;--surface3:#2a2e42;--border:#2e3148;
+  --text:#e8eaf0;--text-muted:#8b8fa8;--accent:#4f8ef7;--accent2:#7c5cbf;
+  --green:#22c55e;--red:#ef4444;--yellow:#f59e0b;--orange:#f97316;--cyan:#22d3ee;
+  --radius:12px;--radius-lg:18px;
+}
+body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;min-height:100vh;font-size:15px;line-height:1.5;padding-bottom:60px}
+#header{background:var(--surface);border-bottom:1px solid var(--border);padding:14px 16px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;flex-wrap:wrap;gap:10px}
+#header h1{font-size:17px;font-weight:700;letter-spacing:-.3px;color:var(--accent)}
+#header h1 span{color:var(--text-muted);font-weight:400}
+#header a.back{color:var(--text-muted);text-decoration:none;font-size:13px;border:1px solid var(--border);border-radius:20px;padding:6px 14px;transition:all .2s;white-space:nowrap}
+#header a.back:hover{border-color:var(--accent);color:var(--text)}
+#header .quiz-link{background:var(--accent);border-color:var(--accent);color:#fff!important}
+.wrap{max-width:1000px;margin:0 auto;padding:20px 16px}
+.section-nav{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:22px}
+.section-nav a{background:var(--surface);border:1px solid var(--border);color:var(--text-muted);border-radius:20px;padding:7px 14px;font-size:13px;text-decoration:none;font-weight:500;transition:all .2s}
+.section-nav a:hover{border-color:var(--accent);color:var(--text)}
+h2.flow-title{font-size:20px;font-weight:800;margin:36px 0 6px;color:var(--text);display:flex;align-items:center;gap:8px}
+h2.flow-title:first-of-type{margin-top:0}
+.flow-sub{color:var(--text-muted);font-size:13px;margin-bottom:18px}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:18px;margin-bottom:16px}
+
+table.limtable{width:100%;border-collapse:collapse;font-size:13.5px;margin-top:4px}
+table.limtable th{background:var(--surface3);color:var(--cyan);text-align:left;padding:9px 12px;font-size:12px;text-transform:uppercase;letter-spacing:.3px;border-bottom:2px solid var(--border)}
+table.limtable td{padding:10px 12px;border-bottom:1px solid var(--border);vertical-align:top}
+table.limtable tr:last-child td{border-bottom:none}
+table.limtable .item{font-weight:700;color:var(--text)}
+table.limtable .amt{font-weight:800;color:var(--green);white-space:nowrap}
+table.limtable .amt2025{color:var(--text-muted);white-space:nowrap}
+table.limtable tr:hover td{background:rgba(79,142,247,.05)}
+
+.pill{display:inline-block;padding:3px 10px;border-radius:20px;font-size:11.5px;font-weight:700}
+.pill.new{background:#713f12;color:#fcd34d}
+.pill.fixed{background:#3f2d5c;color:#c4b5fd}
+
+.hook-box{background:rgba(124,45,18,.15);border:1px solid #7c2d12;border-radius:10px;padding:10px 14px;margin-top:14px;font-size:13px;color:#fdba74}
+.hook-box b{color:#fed7aa}
+
+.note-box{background:rgba(34,197,94,.08);border:1px solid #22c55e;border-radius:10px;padding:10px 14px;margin-top:14px;font-size:13px;color:#86efac}
+.note-box b{color:#bbf7d0}
+
+.source-box{background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:12px 14px;margin-top:20px;font-size:12px;color:var(--text-muted);line-height:1.7}
+.source-box b{color:var(--text)}
+
+.cta-card{background:linear-gradient(135deg,#1e3a5f,#3f2d5c);border:1px solid var(--accent2);border-radius:var(--radius-lg);padding:20px;margin-top:30px;text-align:center}
+.cta-card h3{font-size:17px;font-weight:800;margin-bottom:6px}
+.cta-card p{color:#c4b5fd;font-size:13px;margin-bottom:14px}
+.cta-card a{display:inline-block;background:var(--accent);color:#fff;text-decoration:none;font-weight:700;font-size:14px;padding:11px 24px;border-radius:20px;transition:all .2s}
+.cta-card a:hover{background:#3a7ef0}
+
+@media(max-width:640px){
+  table.limtable{font-size:12.5px}
+  table.limtable th,table.limtable td{padding:8px 8px}
+}
+</style>
+</head>
+<body>
+<div id="header">
+  <h1>Series 65 <span>· Contribution Limits Reference (2026)</span></h1>
+  <div style="display:flex;gap:8px;flex-wrap:wrap">
+    <a class="back quiz-link" href="limits_quiz.html">🎯 Take the Limits Quiz →</a>
+    <a class="back" href="index.html">← Back to Tutor</a>
+  </div>
+</div>
+
+<div class="wrap">
+
+<div class="section-nav">
+  <a href="#tax-treatment">💵 Pre-Tax vs. Post-Tax</a>
+  <a href="#workplace">🏢 Workplace Plans (401k/403b/457/TSP)</a>
+  <a href="#iras">🏦 IRAs</a>
+  <a href="#small-biz">🏪 SIMPLE &amp; SEP</a>
+  <a href="#health">🏥 HSA &amp; FSA</a>
+  <a href="#education">🎓 Education Accounts</a>
+  <a href="#kiddie">👶 Kiddie Tax</a>
+  <a href="#estate-gift">🎁 Estate &amp; Gift Tax</a>
+  <a href="#social-security">🧾 Social Security &amp; Other</a>
+</div>
+
+<div class="card" style="background:rgba(79,142,247,.08);border-color:var(--accent)">
+  <div style="font-size:14px;line-height:1.6">
+  <b>📌 All figures below are official 2026 IRS limits</b> (IRS Notice 2025-67 / IR-2025-111 for retirement plans; Rev. Proc. 2025-19 for HSA/HDHP; Rev. Proc. 2025-32 for FSA, kiddie tax, and gift/estate tax figures). The Series 65 exam tests the CONCEPTS and RELATIONSHIPS between these limits far more than exact dollar figures — but current-year numbers do show up, especially for IRA/401(k)/SEP/HSA basics. This page is a living cheat sheet; the 2025 comparison column helps you see which limits actually moved.
+  </div>
+</div>
+
+<!-- ══════════ PRE-TAX VS POST-TAX ══════════ -->
+<h2 class="flow-title" id="tax-treatment">💵 Pre-Tax vs. Post-Tax Dollars</h2>
+<div class="flow-sub">The same dollar limit often applies to both a pre-tax and a post-tax version of the same plan (traditional vs. Roth) — the exam loves testing WHEN the tax bite happens, not just how much you can put in.</div>
+<div class="card">
+  <table class="limtable">
+    <tr><th>Account / Plan</th><th>Contribution (money going in)</th><th>Growth</th><th>Qualified withdrawal</th></tr>
+    <tr><td class="item">Traditional 401(k)/403(b)/457(b)/TSP, Traditional IRA, SIMPLE, SEP</td><td class="amt">Pre-tax</td><td>Tax-deferred</td><td>Fully taxable as ordinary income</td></tr>
+    <tr><td class="item">Roth 401(k)/403(b)/457(b)/TSP, Roth IRA</td><td class="amt2025">Post-tax (after-tax dollars in)</td><td>Tax-free</td><td>Tax-free (5-year rule + age 59½, etc.)</td></tr>
+    <tr><td class="item">HSA</td><td class="amt">Pre-tax (or above-the-line deduction if made outside payroll)</td><td>Tax-free</td><td>Tax-free — but ONLY if used for qualified medical expenses</td></tr>
+    <tr><td class="item">Health FSA / Dependent Care FSA</td><td class="amt">Pre-tax (payroll salary reduction)</td><td>N/A — use-it-or-lose-it, no investment growth</td><td>Tax-free for qualified expenses</td></tr>
+    <tr><td class="item">529 Plan</td><td class="amt2025">Post-tax (after-tax dollars — no federal deduction, though many states offer one)</td><td>Tax-free</td><td>Tax-free for qualified education expenses</td></tr>
+    <tr><td class="item">Coverdell ESA</td><td class="amt2025">Post-tax (after-tax dollars, no federal deduction)</td><td>Tax-free</td><td>Tax-free for qualified education expenses</td></tr>
+    <tr><td class="item">Non-qualified annuity</td><td class="amt2025">Post-tax (after-tax dollars)</td><td>Tax-deferred</td><td>Gains taxed as ordinary income (LIFO — gains come out first); return of principal is tax-free</td></tr>
+  </table>
+  <div class="hook-box">🧠 <b>Memory hook:</b> "Pay the IRS now, or pay it later — but you always pay once." Pre-tax/traditional = deduction today, ordinary income tax on withdrawal. Post-tax/Roth = no deduction today, tax-free growth AND withdrawal. The dollar limits (e.g., the $24,500 401(k) deferral, the $7,500 IRA limit) are usually a SHARED cap across the traditional and Roth version of the same plan — contributing to both doesn't double your limit.</div>
+  <div class="note-box">✅ <b>Test tip:</b> You can ALWAYS contribute to a traditional IRA regardless of income — you might just not get to deduct it (see phase-outs below). Roth IRA contributions, by contrast, are blocked entirely once income exceeds the phase-out ceiling.</div>
+</div>
+
+<!-- ══════════ WORKPLACE PLANS ══════════ -->
+<h2 class="flow-title" id="workplace">🏢 Workplace Retirement Plans — 401(k), 403(b), 457(b), TSP</h2>
+<div class="flow-sub">Employer-sponsored elective-deferral plans. All figures per individual, per year.</div>
+<div class="card">
+  <table class="limtable">
+    <tr><th>Limit</th><th>2026</th><th>2025</th><th>Notes</th></tr>
+    <tr><td class="item">Employee elective deferral</td><td class="amt">$24,500</td><td class="amt2025">$23,500</td><td>401(k), 403(b), governmental 457(b), federal TSP</td></tr>
+    <tr><td class="item">Catch-up (age 50+)</td><td class="amt">$8,000</td><td class="amt2025">$7,500</td><td>On top of the regular deferral → $32,500 total for most 50+ savers</td></tr>
+    <tr><td class="item">SECURE 2.0 "super" catch-up (ages 60–63)</td><td class="amt">$11,250</td><td class="amt2025">$11,250 <span class="pill fixed">no change</span></td><td><b>REPLACES</b> (does not stack with) the standard $8,000 catch-up → $35,750 total for ages 60–63</td></tr>
+    <tr><td class="item">Mandatory Roth catch-up wage threshold</td><td class="amt">$150,000 <span class="pill new">new for 2026</span></td><td class="amt2025">Not yet in effect</td><td>If PRIOR-year (2025) FICA wages from that employer exceeded $150,000, 2026 catch-up contributions must be Roth (SECURE 2.0 §603)</td></tr>
+    <tr><td class="item">Total annual additions — §415(c)</td><td class="amt">$72,000</td><td class="amt2025">$70,000</td><td>Employee + employer combined. Rises to $80,000 with age-50 catch-up, or $83,250 with the 60–63 super catch-up</td></tr>
+    <tr><td class="item">Annual compensation limit — §401(a)(17)</td><td class="amt">$360,000</td><td class="amt2025">$350,000</td><td>Max pay countable for plan contribution/benefit calculations</td></tr>
+    <tr><td class="item">Highly compensated employee (HCE) threshold</td><td class="amt">$160,000 <span class="pill fixed">no change</span></td><td class="amt2025">$160,000</td><td>Used for nondiscrimination testing</td></tr>
+    <tr><td class="item">Defined benefit plan annual benefit limit — §415(b)</td><td class="amt">$290,000</td><td class="amt2025">$280,000</td><td>Max annual pension benefit payable to one participant</td></tr>
+  </table>
+  <div class="hook-box">🧠 <b>Memory hook:</b> "60–63 REPLACES, doesn't stack." The super catch-up for ages 60–63 is a swap-in for the regular catch-up, not an addition to it — a classic exam trap.</div>
+</div>
+
+<!-- ══════════ IRAS ══════════ -->
+<h2 class="flow-title" id="iras">🏦 IRAs — Traditional &amp; Roth</h2>
+<div class="flow-sub">The IRA contribution limit is shared across ALL of a person's traditional + Roth IRAs combined — not per account.</div>
+<div class="card">
+  <table class="limtable">
+    <tr><th>Limit</th><th>2026</th><th>2025</th><th>Notes</th></tr>
+    <tr><td class="item">IRA contribution (traditional + Roth combined)</td><td class="amt">$7,500</td><td class="amt2025">$7,000</td><td>Shared limit across all IRAs, not per account</td></tr>
+    <tr><td class="item">IRA catch-up (age 50+)</td><td class="amt">$1,100</td><td class="amt2025">$1,100 <span class="pill fixed">no change</span></td><td>→ $8,600 total for age 50+ (indexed in $100 increments under SECURE 2.0)</td></tr>
+    <tr><td class="item">Traditional IRA deduction phase-out — single, covered by workplace plan</td><td class="amt">$81,000–$91,000</td><td class="amt2025">$79,000–$89,000</td><td>Applies only if the taxpayer is an active participant in an employer plan</td></tr>
+    <tr><td class="item">Traditional IRA deduction phase-out — MFJ, contributing spouse covered</td><td class="amt">$129,000–$149,000</td><td class="amt2025">$126,000–$146,000</td><td>Applies when the IRA-contributing spouse is covered by a workplace plan</td></tr>
+    <tr><td class="item">Traditional IRA deduction phase-out — contributor not covered, spouse is</td><td class="amt">$242,000–$252,000</td><td class="amt2025">$236,000–$246,000</td><td>Much higher band — the contributing spouse isn't the one covered</td></tr>
+    <tr><td class="item">Roth IRA contribution phase-out — single / HoH</td><td class="amt">$153,000–$168,000</td><td class="amt2025">$150,000–$165,000</td><td>Above the top of the range, no direct Roth contribution allowed</td></tr>
+    <tr><td class="item">Roth IRA contribution phase-out — MFJ</td><td class="amt">$242,000–$252,000</td><td class="amt2025">$236,000–$246,000</td><td>Same range as the "spouse not covered" traditional IRA phase-out above — easy to mix up</td></tr>
+    <tr><td class="item">Saver's Credit income ceiling — MFJ / HoH / Single</td><td class="amt">$80,500 / $60,375 / $40,250</td><td class="amt2025">$79,000 / $59,250 / $39,500</td><td>Retirement Savings Contributions Credit for low/moderate-income savers</td></tr>
+  </table>
+  <div class="hook-box">🧠 <b>Memory hook:</b> "One IRA limit, many accounts." $7,500 is a PERSON's total across every traditional + Roth IRA they own — opening five IRAs doesn't multiply the limit.</div>
+</div>
+
+<!-- ══════════ SMALL BUSINESS PLANS ══════════ -->
+<h2 class="flow-title" id="small-biz">🏪 Small-Business Plans — SIMPLE &amp; SEP</h2>
+<div class="flow-sub">Designed for small employers and the self-employed — simpler administration, different limit structures.</div>
+<div class="card">
+  <table class="limtable">
+    <tr><th>Limit</th><th>2026</th><th>2025</th><th>Notes</th></tr>
+    <tr><td class="item">SIMPLE IRA / SIMPLE 401(k) employee deferral</td><td class="amt">$17,000</td><td class="amt2025">$16,500</td><td>Standard SIMPLE plan limit</td></tr>
+    <tr><td class="item">"Applicable" SIMPLE plan deferral (SECURE 2.0, generally ≤25 employees)</td><td class="amt">$18,100</td><td class="amt2025">$17,600</td><td>Enhanced limit for certain small-employer SIMPLE plans</td></tr>
+    <tr><td class="item">SIMPLE catch-up (age 50+), standard plans</td><td class="amt">$4,000</td><td class="amt2025">$3,500</td><td></td></tr>
+    <tr><td class="item">SIMPLE catch-up, "applicable" plans</td><td class="amt">$3,850</td><td class="amt2025">$3,850 <span class="pill fixed">no change</span></td><td>⚠️ LOWER than the standard $4,000 catch-up — a common trap</td></tr>
+    <tr><td class="item">SIMPLE "super" catch-up (ages 60–63)</td><td class="amt">$5,250</td><td class="amt2025">$5,250 <span class="pill fixed">no change</span></td><td>Replaces the standard catch-up for that age band</td></tr>
+    <tr><td class="item">SEP IRA contribution</td><td class="amt">Lesser of 25% of comp or $72,000</td><td class="amt2025">Lesser of 25% of comp or $70,000</td><td>Same dollar ceiling as the §415(c) DC plan limit</td></tr>
+    <tr><td class="item">SEP minimum compensation threshold</td><td class="amt">$800</td><td class="amt2025">$750</td><td>Minimum pay before an employer must include an employee in the SEP</td></tr>
+  </table>
+  <div class="hook-box">🧠 <b>Memory hook:</b> "SIMPLE can't share." An employer generally cannot maintain a SIMPLE IRA AND any other qualified plan (like a SEP) for the same employees in the same year — SIMPLE is meant to be exclusive.</div>
+</div>
+
+<!-- ══════════ HEALTH ACCOUNTS ══════════ -->
+<h2 class="flow-title" id="health">🏥 Health Accounts — HSA &amp; FSA</h2>
+<div class="flow-sub">HSAs require enrollment in a qualifying High-Deductible Health Plan (HDHP); FSAs do not.</div>
+<div class="card">
+  <table class="limtable">
+    <tr><th>Limit</th><th>2026</th><th>2025</th><th>Notes</th></tr>
+    <tr><td class="item">HSA contribution — self-only coverage</td><td class="amt">$4,400</td><td class="amt2025">$4,300</td><td></td></tr>
+    <tr><td class="item">HSA contribution — family coverage</td><td class="amt">$8,750</td><td class="amt2025">$8,550</td><td></td></tr>
+    <tr><td class="item">HSA catch-up (age 55+)</td><td class="amt">$1,000</td><td class="amt2025">$1,000 <span class="pill fixed">fixed by statute</span></td><td>NOT indexed for inflation — unlike almost every other limit on this page</td></tr>
+    <tr><td class="item">HDHP minimum annual deductible — self-only</td><td class="amt">$1,700</td><td class="amt2025">$1,650</td><td>Plan must meet this floor to be HSA-eligible</td></tr>
+    <tr><td class="item">HDHP minimum annual deductible — family</td><td class="amt">$3,400</td><td class="amt2025">$3,300</td><td></td></tr>
+    <tr><td class="item">Health FSA salary-reduction limit</td><td class="amt">$3,400</td><td class="amt2025">$3,300</td><td>Coincidentally equals the 2026 HDHP family deductible floor — don't confuse the two</td></tr>
+    <tr><td class="item">Dependent care FSA limit</td><td class="amt">$5,000</td><td class="amt2025">$5,000 <span class="pill fixed">fixed by statute</span></td><td>NOT indexed for inflation (unlike the health FSA)</td></tr>
+  </table>
+  <div class="hook-box">🧠 <b>Memory hook:</b> "HSA needs an HDHP; FSA doesn't." Only HSA eligibility is gated behind carrying a qualifying high-deductible health plan — FSAs are offered independently by an employer's cafeteria plan.</div>
+</div>
+
+<!-- ══════════ EDUCATION ACCOUNTS ══════════ -->
+<h2 class="flow-title" id="education">🎓 Education Savings Accounts — 529 vs. Coverdell ESA</h2>
+<div class="flow-sub">The single most commonly tested contrast on this whole page: which one has NO federal cap, and which one is hard-capped at $2,000?</div>
+<div class="card">
+  <table class="limtable">
+    <tr><th>Feature</th><th>529 Plan</th><th>Coverdell ESA</th></tr>
+    <tr><td class="item">Federal annual contribution cap</td><td class="amt">None — only state aggregate limits apply</td><td class="amt2025">$2,000 per beneficiary/year, ALL contributors combined</td></tr>
+    <tr><td class="item">Indexed for inflation?</td><td>N/A (no federal cap)</td><td>No — fixed at $2,000 since creation</td></tr>
+    <tr><td class="item">Contributor income limit?</td><td>None</td><td>Yes — phases out based on contributor's MAGI (roughly $95,000–$110,000 single / $190,000–$220,000 MFJ, adjust each year)</td></tr>
+    <tr><td class="item">Qualified expenses</td><td>Higher ed, K-12 tuition (up to $10,000/yr), apprenticeships, student loan repayment (limited)</td><td>K-12 AND higher ed expenses, broader than 529 for K-12 (books, supplies, tutoring, etc.)</td></tr>
+    <tr><td class="item">Age restrictions</td><td>None</td><td>Contributions must stop at beneficiary age 18; funds generally used/rolled by age 30</td></tr>
+    <tr><td class="item">Large lump-sum gifting</td><td>5-year gift-tax averaging election: front-load 5 × annual exclusion ($95,000 single / $190,000 with gift-splitting for 2026) with no gift tax</td><td>No special averaging election — ordinary annual gift tax exclusion rules apply</td></tr>
+  </table>
+  <div class="note-box">✅ <b>Test tip:</b> If a question describes an unlimited/high-dollar contribution + a special multi-year gift election → it's a 529. If it describes a hard $2,000 cap shared across contributors + an age-18 contribution cutoff → it's a Coverdell ESA.</div>
+</div>
+
+<!-- ══════════ KIDDIE TAX ══════════ -->
+<h2 class="flow-title" id="kiddie">👶 Kiddie Tax — Unearned Income Tiers (2026)</h2>
+<div class="flow-sub">A three-tier structure on a CHILD's unearned (investment) income only — wages are unaffected.</div>
+<div class="card">
+  <table class="limtable">
+    <tr><th>Unearned income tier</th><th>2026 tax treatment</th></tr>
+    <tr><td class="item">First $1,350</td><td class="amt">Tax-free — covered by the dependent standard deduction</td></tr>
+    <tr><td class="item">$1,351 to $2,700</td><td>Taxed at the <b>child's own</b> (typically lower) tax rate</td></tr>
+    <tr><td class="item">Above $2,700</td><td>Taxed at the <b>parent's marginal rate</b> — reported via Form 8615</td></tr>
+  </table>
+  <div class="hook-box">🧠 <b>Memory hook:</b> Kiddie tax targets UNEARNED income only (interest, dividends, capital gains) — it exists to stop parents from shifting investments into a child's lower bracket. A child's own EARNED income (wages from a job) is taxed at the child's normal rates and is completely unaffected by these tiers. Applies to kids under 18, or full-time students under 24 without earned income exceeding half their support.</div>
+</div>
+
+<!-- ══════════ ESTATE & GIFT ══════════ -->
+<h2 class="flow-title" id="estate-gift">🎁 Estate &amp; Gift Tax</h2>
+<div class="card">
+  <table class="limtable">
+    <tr><th>Limit</th><th>2026</th><th>2025</th><th>Notes</th></tr>
+    <tr><td class="item">Annual gift tax exclusion</td><td class="amt">$19,000</td><td class="amt2025">$19,000 <span class="pill fixed">no change</span></td><td><b>Per recipient</b> — a donor can give this to unlimited different people with no gift tax filing</td></tr>
+    <tr><td class="item">Federal estate &amp; gift tax basic exclusion (lifetime)</td><td class="amt">$15,000,000</td><td class="amt2025">$13,990,000</td><td>Set at $15M for 2026 under the One Big Beautiful Bill Act, indexed thereafter</td></tr>
+  </table>
+  <div class="hook-box">🧠 <b>Memory hook:</b> "Per person, per year" for the $19,000 annual exclusion — it's not a total cap, it resets for every unique recipient every calendar year.</div>
+</div>
+
+<!-- ══════════ SOCIAL SECURITY / OTHER ══════════ -->
+<h2 class="flow-title" id="social-security">🧾 Social Security &amp; Other</h2>
+<div class="card">
+  <table class="limtable">
+    <tr><th>Limit</th><th>2026</th><th>2025</th><th>Notes</th></tr>
+    <tr><td class="item">Social Security (OASDI) taxable wage base</td><td class="amt">$184,500</td><td class="amt2025">$176,100</td><td>6.2% OASDI tax (employee + employer each) stops here; 1.45% Medicare tax has NO cap</td></tr>
+    <tr><td class="item">Additional Medicare tax (0.9%) threshold</td><td class="amt">$200,000 single / $250,000 MFJ <span class="pill fixed">no change</span></td><td class="amt2025">Same</td><td>Not indexed for inflation</td></tr>
+    <tr><td class="item">Qualified charitable distribution (QCD) annual limit</td><td class="amt">$111,000</td><td class="amt2025">$108,000</td><td>Per IRA owner, age 70½+, direct-to-charity IRA distribution</td></tr>
+  </table>
+</div>
+
+<div class="source-box">
+  <b>Sources:</b> IRS Notice 2025-67 / IR-2025-111 (retirement plan limits, Nov. 13, 2025) · Rev. Proc. 2025-19 (2026 HSA/HDHP limits) · Rev. Proc. 2025-32 (2026 FSA, kiddie tax, estate/gift tax inflation adjustments) · SSA October 2025 COLA announcement (Social Security wage base). Figures are current as of this page's last update and are provided for Series 65 exam study purposes — always verify against IRS.gov for real-world advice, since these numbers change annually.
+</div>
+
+<div class="cta-card">
+  <h3>🎯 Ready to test yourself?</h3>
+  <p>55 questions drilling every limit on this page — 401(k), IRA, SIMPLE, SEP, HSA, 529 vs. Coverdell, kiddie tax, and more.</p>
+  <a href="limits_quiz.html">Take the Limits Quiz →</a>
+</div>
+
+</div>
+</body>
+</html>

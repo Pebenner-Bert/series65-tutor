@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Series 65 — Mutual Funds &amp; Annuities Visual Flows</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0f1117;--surface:#1a1d27;--surface2:#242736;--surface3:#2a2e42;--border:#2e3148;
+  --text:#e8eaf0;--text-muted:#8b8fa8;--accent:#4f8ef7;--accent2:#7c5cbf;
+  --green:#22c55e;--red:#ef4444;--yellow:#f59e0b;--orange:#f97316;--cyan:#22d3ee;
+  --radius:12px;--radius-lg:18px;
+}
+body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;min-height:100vh;font-size:15px;line-height:1.5;padding-bottom:60px}
+#header{background:var(--surface);border-bottom:1px solid var(--border);padding:14px 16px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;flex-wrap:wrap;gap:10px}
+#header h1{font-size:17px;font-weight:700;letter-spacing:-.3px;color:var(--accent)}
+#header h1 span{color:var(--text-muted);font-weight:400}
+#header a.back{color:var(--text-muted);text-decoration:none;font-size:13px;border:1px solid var(--border);border-radius:20px;padding:6px 14px;transition:all .2s}
+#header a.back:hover{border-color:var(--accent);color:var(--text)}
+.wrap{max-width:1000px;margin:0 auto;padding:20px 16px}
+.section-nav{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:22px}
+.section-nav a{background:var(--surface);border:1px solid var(--border);color:var(--text-muted);border-radius:20px;padding:7px 14px;font-size:13px;text-decoration:none;font-weight:500;transition:all .2s}
+.section-nav a:hover{border-color:var(--accent);color:var(--text)}
+h2.flow-title{font-size:20px;font-weight:800;margin:36px 0 6px;color:var(--text);display:flex;align-items:center;gap:8px}
+h2.flow-title:first-of-type{margin-top:0}
+.flow-sub{color:var(--text-muted);font-size:13px;margin-bottom:18px}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:18px;margin-bottom:16px}
+.section-tag{display:inline-block;font-size:11px;font-weight:800;letter-spacing:.5px;text-transform:uppercase;padding:3px 10px;border-radius:10px;margin-bottom:14px}
+.section-tag.mf{background:#1e3a5f;color:#93c5fd}
+.section-tag.an{background:#3f2d5c;color:#c4b5fd}
+
+/* FLOWCHART */
+.flowchart{display:flex;flex-direction:column;align-items:center;gap:0;padding:10px 0}
+.fnode{background:var(--surface2);border:1.5px solid var(--border);border-radius:var(--radius);padding:12px 18px;text-align:center;font-size:14px;font-weight:600;max-width:320px;position:relative}
+.fnode.start{background:var(--accent);border-color:var(--accent);color:#fff;font-weight:700}
+.fnode.q{background:var(--surface3);border-color:var(--accent2);color:var(--text)}
+.fnode.end-a{background:#14532d;border-color:var(--green);color:#86efac}
+.fnode.end-b{background:#1e3a5f;border-color:var(--accent);color:#93c5fd}
+.fnode.end-c{background:#450a0a;border-color:var(--red);color:#fca5a5}
+.fnode.end-y{background:#713f12;border-color:var(--yellow);color:#fcd34d}
+.farrow{color:var(--text-muted);font-size:20px;line-height:1;margin:2px 0}
+.fbranch{display:flex;gap:26px;justify-content:center;align-items:flex-start;flex-wrap:wrap;margin:6px 0}
+.fbranch-col{display:flex;flex-direction:column;align-items:center;gap:0}
+.fbranch-label{font-size:11px;color:var(--yellow);font-weight:700;text-transform:uppercase;letter-spacing:.4px;margin:4px 0}
+
+/* TABLE */
+table.regtable{width:100%;border-collapse:collapse;font-size:13.5px;margin-top:4px}
+table.regtable th{background:var(--surface3);color:var(--cyan);text-align:left;padding:9px 12px;font-size:12px;text-transform:uppercase;letter-spacing:.3px;border-bottom:2px solid var(--border)}
+table.regtable td{padding:10px 12px;border-bottom:1px solid var(--border);vertical-align:top}
+table.regtable tr:last-child td{border-bottom:none}
+table.regtable .role{font-weight:700;color:var(--text)}
+.pill{display:inline-block;padding:3px 10px;border-radius:20px;font-size:11.5px;font-weight:700}
+.pill.sec{background:#1e3a5f;color:#93c5fd}
+.pill.state{background:#3f2d5c;color:#c4b5fd}
+.pill.both{background:#713f12;color:#fcd34d}
+.pill.green{background:#14532d;color:#86efac}
+.pill.red{background:#450a0a;color:#fca5a5}
+
+/* CAN/CANNOT */
+.cancannot{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:6px}
+@media(max-width:640px){.cancannot{grid-template-columns:1fr}}
+.cc-col{border-radius:var(--radius);padding:14px 16px;border:1.5px solid var(--border)}
+.cc-col.can{background:rgba(34,197,94,.08);border-color:#22c55e}
+.cc-col.cannot{background:rgba(239,68,68,.08);border-color:#ef4444}
+.cc-col h3{font-size:14px;font-weight:800;margin-bottom:10px;display:flex;align-items:center;gap:6px}
+.cc-col.can h3{color:var(--green)}
+.cc-col.cannot h3{color:var(--red)}
+.cc-col ul{list-style:none;padding:0;display:flex;flex-direction:column;gap:8px}
+.cc-col li{font-size:13.5px;padding-left:20px;position:relative;line-height:1.45}
+.cc-col.can li::before{content:"✓";position:absolute;left:0;color:var(--green);font-weight:800}
+.cc-col.cannot li::before{content:"✕";position:absolute;left:0;color:var(--red);font-weight:800}
+
+/* VS COMPARISON */
+.vscomp{display:grid;grid-template-columns:1fr auto 1fr;gap:0;align-items:stretch;margin-top:6px}
+@media(max-width:640px){.vscomp{grid-template-columns:1fr}}
+.vs-side{background:var(--surface2);border-radius:var(--radius);padding:16px}
+.vs-side.left{border:1.5px solid var(--accent)}
+.vs-side.right{border:1.5px solid var(--accent2)}
+.vs-mid{display:flex;align-items:center;justify-content:center;padding:0 16px;font-weight:800;color:var(--text-muted);font-size:13px}
+@media(max-width:640px){.vs-mid{padding:10px 0}}
+.vs-side h4{font-size:15px;font-weight:800;margin-bottom:8px}
+.vs-side.left h4{color:var(--accent)}
+.vs-side.right h4{color:var(--accent2)}
+.vs-side .tag{display:inline-block;font-size:11px;font-weight:700;padding:2px 9px;border-radius:12px;margin-bottom:8px}
+.vs-side.left .tag{background:#1e3a5f;color:#93c5fd}
+.vs-side.right .tag{background:#3f2d5c;color:#c4b5fd}
+.vs-side ul{margin-top:8px;padding-left:0;list-style:none;display:flex;flex-direction:column;gap:6px}
+.vs-side li{font-size:13.5px;padding-left:16px;position:relative}
+.vs-side li::before{content:"—";position:absolute;left:0;color:var(--text-muted)}
+
+/* TIMELINE */
+.timeline{display:flex;overflow-x:auto;gap:0;padding:20px 4px 10px;margin-top:6px}
+.tl-step{flex:0 0 auto;min-width:150px;text-align:center;position:relative;padding:0 6px}
+.tl-dot{width:14px;height:14px;border-radius:50%;background:var(--accent);margin:0 auto 10px;border:3px solid var(--bg);box-shadow:0 0 0 2px var(--accent)}
+.tl-step:not(:last-child)::after{content:"";position:absolute;top:6px;left:calc(50% + 14px);right:calc(-50% + 14px);height:2px;background:var(--border)}
+.tl-label{font-size:12px;font-weight:700;color:var(--text);margin-bottom:3px}
+.tl-detail{font-size:11.5px;color:var(--text-muted);line-height:1.4}
+
+.hook-box{background:rgba(124,45,18,.15);border:1px solid #7c2d12;border-radius:10px;padding:10px 14px;margin-top:14px;font-size:13px;color:#fdba74}
+.hook-box b{color:#fed7aa}
+</style>
+</head>
+<body>
+<div id="header">
+  <h1>Series 65 <span>· Mutual Funds &amp; Annuities Visual Flows</span></h1>
+  <a class="back" href="index.html">← Back to Tutor</a>
+</div>
+
+<div class="wrap">
+
+<div class="section-nav">
+  <a href="#mf-openclosed">📦 Open-End vs Closed-End</a>
+  <a href="#mf-shareclass">🎯 Share Class Decision Flow</a>
+  <a href="#mf-nav">🧮 NAV / Sales Charge / Breakpoints</a>
+  <a href="#mf-tax">💰 Mutual Fund Taxation</a>
+  <a href="#an-types">🌳 Annuity Type Decision Tree</a>
+  <a href="#an-phases">⏱️ Accumulation vs Annuitization</a>
+  <a href="#an-tax">🧾 Annuity Taxation</a>
+  <a href="#an-cancannot">🚦 Annuity Sales — Can/Cannot</a>
+</div>
+
+<!-- ══════════ 1. OPEN-END VS CLOSED-END ══════════ -->
+<div class="section-tag mf">MUTUAL FUNDS</div>
+<h2 class="flow-title" id="mf-openclosed">📦 Open-End Fund vs Closed-End Fund vs UIT</h2>
+<div class="flow-sub">The exam loves to test what makes a "mutual fund" different from its lookalikes.</div>
+<div class="card">
+  <table class="regtable">
+    <tr><th>Feature</th><th>Open-End Fund</th><th>Closed-End Fund</th><th>UIT</th></tr>
+    <tr>
+      <td class="role">Shares issued</td>
+      <td>Continuously, no limit</td>
+      <td>Fixed # at IPO only</td>
+      <td>Fixed # at inception</td>
+    </tr>
+    <tr>
+      <td class="role">Trades at</td>
+      <td><span class="pill green">NAV only</span> (forward pricing)</td>
+      <td><span class="pill state">Market price</span> — can trade at premium or discount to NAV</td>
+      <td>Bid/ask near NAV set by sponsor</td>
+    </tr>
+    <tr>
+      <td class="role">Where it trades</td>
+      <td>Redeemed directly with the fund</td>
+      <td>Exchange-listed, bought/sold like a stock</td>
+      <td>Bought from sponsor / secondary market</td>
+    </tr>
+    <tr>
+      <td class="role">Management</td>
+      <td>Actively managed, ongoing</td>
+      <td>Actively managed, ongoing</td>
+      <td><span class="pill red">Unmanaged</span> — fixed portfolio</td>
+    </tr>
+    <tr>
+      <td class="role">Redeemable?</td>
+      <td>Yes — redeemable security, forward-priced within 7 days</td>
+      <td>No — sell on exchange instead</td>
+      <td>Yes, at approx. NAV, or holds to maturity/termination</td>
+    </tr>
+    <tr>
+      <td class="role">Leverage / borrowing</td>
+      <td>Very limited</td>
+      <td>Can use leverage (preferred stock, debt)</td>
+      <td>None</td>
+    </tr>
+  </table>
+  <div class="hook-box"><b>🧠 Exam trap:</b> "Trades above or below NAV" = <b>closed-end fund</b>, never an open-end fund. Open-end funds ALWAYS transact exactly at NAV (plus/minus sales charge) — that's the giveaway phrase.</div>
+</div>
+
+<!-- ══════════ 2. SHARE CLASS DECISION FLOW ══════════ -->
+<h2 class="flow-title" id="mf-shareclass">🎯 Mutual Fund Share Class — Which One Fits?</h2>
+<div class="flow-sub">A / B / C shares: the exam tests which one suits a given investment amount + holding period.</div>
+<div class="card">
+  <div class="flowchart">
+    <div class="fnode start">Client wants to buy a mutual fund</div>
+    <div class="farrow">↓</div>
+    <div class="fnode q">How long will they hold it, and how much are they investing?</div>
+    <div class="farrow">↓</div>
+    <div class="fbranch">
+      <div class="fbranch-col">
+        <div class="fbranch-label">Large $ / long-term</div>
+        <div class="fnode end-b">Class A<br><span style="font-weight:400;font-size:11.5px">Front-end load, reduced by breakpoints — best for large purchases held long-term</span></div>
+      </div>
+      <div class="fbranch-col">
+        <div class="fbranch-label">Small $ / long-term</div>
+        <div class="fnode end-y">Class B<br><span style="font-weight:400;font-size:11.5px">No front load, back-end CDSC declining over time, converts to A shares later</span></div>
+      </div>
+      <div class="fbranch-col">
+        <div class="fbranch-label">Short holding period</div>
+        <div class="fnode end-c">Class C<br><span style="font-weight:400;font-size:11.5px">No/low front load, level annual 12b-1 fee, small/no CDSC — costliest if held long-term</span></div>
+      </div>
+    </div>
+  </div>
+  <div class="hook-box"><b>🧠 Memory hook:</b> "A = Ahead of time (pay load upfront), B = Back-end (pay to leave early), C = Continuous (level fee forever)." B shares are rarely the exam's "best" answer once C exists — regulators view B shares skeptically for most investors.</div>
+</div>
+
+<!-- ══════════ 3. NAV / SALES CHARGE / BREAKPOINTS ══════════ -->
+<h2 class="flow-title" id="mf-nav">🧮 NAV, Sales Charge &amp; Breakpoints</h2>
+<div class="flow-sub">The formulas the exam will make you compute.</div>
+<div class="card">
+  <table class="regtable">
+    <tr><th>Concept</th><th>Formula / Rule</th></tr>
+    <tr>
+      <td class="role">NAV per share</td>
+      <td>(Total Assets − Total Liabilities) ÷ Shares Outstanding</td>
+    </tr>
+    <tr>
+      <td class="role">Public Offering Price (POP)</td>
+      <td>NAV ÷ (1 − Sales Charge %) — this is what the buyer pays</td>
+    </tr>
+    <tr>
+      <td class="role">Sales Charge %</td>
+      <td>(POP − NAV) ÷ POP</td>
+    </tr>
+    <tr>
+      <td class="role">Breakpoint</td>
+      <td>Sales charge % drops as $ invested rises (volume discount) — only on Class A shares</td>
+    </tr>
+    <tr>
+      <td class="role">Rights of Accumulation</td>
+      <td>Prior appreciation + new purchases count toward the next breakpoint</td>
+    </tr>
+    <tr>
+      <td class="role">Letter of Intent (LOI)</td>
+      <td>Commit to a breakpoint $ level within 13 months — can backdate 90 days</td>
+    </tr>
+  </table>
+  <div class="hook-box"><b>🚫 Breakpoint sale (violation):</b> selling just under a breakpoint to earn a higher commission — always a prohibited practice, tested constantly.</div>
+</div>
+
+<!-- ══════════ 4. MUTUAL FUND TAXATION ══════════ -->
+<h2 class="flow-title" id="mf-tax">💰 Mutual Fund Taxation</h2>
+<div class="flow-sub">What gets taxed, when, and how.</div>
+<div class="card">
+  <div class="cancannot">
+    <div class="cc-col can">
+      <h3>Taxed to shareholder each year</h3>
+      <ul>
+        <li>Dividends distributed (even if automatically reinvested)</li>
+        <li>Capital gains distributions (short- or long-term, passed through)</li>
+        <li>Realized gain when shares are sold/redeemed (capital gain/loss)</li>
+      </ul>
+    </div>
+    <div class="cc-col cannot">
+      <h3>Exam traps</h3>
+      <ul>
+        <li><strong>Reinvested</strong> dividends are STILL taxable in the year received — no tax deferral just because you didn't take cash</li>
+        <li><strong>Buying a dividend</strong> — purchasing right before the ex-date creates an immediate taxable event with no economic benefit (a prohibited/poor practice to recommend)</li>
+        <li>Fund itself avoids double taxation only if it qualifies as a <strong>regulated investment company (RIC)</strong> under Subchapter M — must distribute ≥90% of income</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ 5. ANNUITY TYPE DECISION TREE ══════════ -->
+<div class="section-tag an">ANNUITIES</div>
+<h2 class="flow-title" id="an-types">🌳 Annuity Type — Decision Tree</h2>
+<div class="flow-sub">Fixed vs Variable, Immediate vs Deferred — walk the tree.</div>
+<div class="card">
+  <div class="flowchart">
+    <div class="fnode start">Client wants an annuity contract</div>
+    <div class="farrow">↓</div>
+    <div class="fnode q">Who bears the investment risk?</div>
+    <div class="farrow">↓</div>
+    <div class="fbranch">
+      <div class="fbranch-col">
+        <div class="fbranch-label">Insurance company</div>
+        <div class="fnode end-b">Fixed Annuity<br><span style="font-weight:400;font-size:11.5px">Guaranteed rate, general account, NOT a security — no license needed beyond insurance</span></div>
+      </div>
+      <div class="fbranch-col">
+        <div class="fbranch-label">The client/owner</div>
+        <div class="fnode end-a">Variable Annuity<br><span style="font-weight:400;font-size:11.5px">Separate account, sub-accounts invest in securities — IS a security, needs Series 6/7 + insurance license</span></div>
+      </div>
+    </div>
+    <div class="farrow">↓</div>
+    <div class="fnode q">When do payments begin?</div>
+    <div class="farrow">↓</div>
+    <div class="fbranch">
+      <div class="fbranch-col">
+        <div class="fbranch-label">Right away</div>
+        <div class="fnode end-y">Immediate Annuity<br><span style="font-weight:400;font-size:11.5px">Single lump-sum premium, payout starts within ~12 months — no accumulation phase</span></div>
+      </div>
+      <div class="fbranch-col">
+        <div class="fbranch-label">Later</div>
+        <div class="fnode end-y">Deferred Annuity<br><span style="font-weight:400;font-size:11.5px">Accumulation phase grows tax-deferred first, payout starts years later</span></div>
+      </div>
+    </div>
+  </div>
+  <div class="hook-box"><b>🧠 Exam trap:</b> a <b>variable</b> annuity is a security (needs a prospectus + suitability analysis); a <b>fixed</b> annuity is NOT a security. But regardless of type, the SALESPERSON needs a state insurance license for either one.</div>
+</div>
+
+<!-- ══════════ 6. ACCUMULATION VS ANNUITIZATION ══════════ -->
+<h2 class="flow-title" id="an-phases">⏱️ Accumulation Phase vs Annuitization (Payout) Phase</h2>
+<div class="flow-sub">The two-phase lifecycle every annuity moves through.</div>
+<div class="card">
+  <div class="timeline">
+    <div class="tl-step">
+      <div class="tl-dot"></div>
+      <div class="tl-label">Premiums paid in</div>
+      <div class="tl-detail">Lump sum or periodic payments purchase "accumulation units"</div>
+    </div>
+    <div class="tl-step">
+      <div class="tl-dot"></div>
+      <div class="tl-label">Accumulation Phase</div>
+      <div class="tl-detail">Money grows tax-deferred; value tracked in accumulation units (variable) or stated rate (fixed)</div>
+    </div>
+    <div class="tl-step">
+      <div class="tl-dot"></div>
+      <div class="tl-label">Annuitize (elect payout)</div>
+      <div class="tl-detail">Accumulation units converted to a FIXED number of "annuity units" — irrevocable choice of payout option</div>
+    </div>
+    <div class="tl-step">
+      <div class="tl-dot"></div>
+      <div class="tl-label">Annuitization / Payout Phase</div>
+      <div class="tl-detail">Regular payments begin; # of annuity units is fixed, but $ value of each unit still floats with performance (variable)</div>
+    </div>
+  </div>
+  <div class="hook-box"><b>🧠 Memory hook:</b> "Accumulation = # of units VARIES as you buy in. Annuitization = # of units is FIXED once you annuitize, but the $ value per unit can still move." That single distinction is tested constantly.</div>
+</div>
+
+<!-- ══════════ 7. ANNUITY TAXATION ══════════ -->
+<h2 class="flow-title" id="an-tax">🧾 Annuity Taxation</h2>
+<div class="flow-sub">LIFO withdrawals vs the exclusion ratio — know which applies when.</div>
+<div class="card">
+  <div class="vscomp">
+    <div class="vs-side left">
+      <span class="tag">LUMP-SUM / PARTIAL WITHDRAWAL</span>
+      <h4>Before annuitizing — LIFO taxation</h4>
+      <ul>
+        <li><strong>Last-In-First-Out</strong>: withdrawals come out of GAINS first</li>
+        <li>Gains taxed as ordinary income (not capital gains)</li>
+        <li>Withdrawals before age 59½ also hit with a 10% IRS penalty on the taxable portion</li>
+        <li>Only after all gains withdrawn does the tax-free return of principal (cost basis) come out</li>
+      </ul>
+    </div>
+    <div class="vs-mid">VS</div>
+    <div class="vs-side right">
+      <span class="tag">ANNUITIZED PAYMENTS</span>
+      <h4>After annuitizing — Exclusion Ratio</h4>
+      <ul>
+        <li>Each payment is split: part return of principal (tax-free), part earnings (taxable)</li>
+        <li><strong>Exclusion ratio</strong> = cost basis ÷ expected total payout — sets the tax-free % of every check</li>
+        <li>Ratio applies consistently to each payment for the payout period</li>
+        <li>Once basis is fully recovered, 100% of further payments become taxable</li>
+      </ul>
+    </div>
+  </div>
+  <div class="hook-box"><b>🧠 Exam trap:</b> non-qualified annuities always use the owner's <strong>cost basis</strong> (after-tax dollars) for these calculations — unlike a qualified plan, contributions were not tax-deductible going in, so only the GROWTH is ever taxed.</div>
+</div>
+
+<!-- ══════════ 8. ANNUITY SALES — CAN / CANNOT ══════════ -->
+<h2 class="flow-title" id="an-cancannot">🚦 Annuity Sales — Suitability &amp; Prohibited Practices</h2>
+<div class="flow-sub">Annuities (esp. variable) are among the most heavily suitability-scrutinized products on the exam.</div>
+<div class="card">
+  <div class="cancannot">
+    <div class="cc-col can">
+      <h3>✅ CAN DO</h3>
+      <ul>
+        <li>Recommend a variable annuity for tax-deferred growth + lifetime income guarantee, if suitable</li>
+        <li>Use a <strong>1035 exchange</strong> to move funds between annuity/life contracts tax-free — if it genuinely benefits the client</li>
+        <li>Charge surrender fees per contract disclosure (typically declining over 7–10 yrs)</li>
+        <li>Sell riders (death benefit, income guarantee) for an added cost, if disclosed and suitable</li>
+      </ul>
+    </div>
+    <div class="cc-col cannot">
+      <h3>🚫 CANNOT DO</h3>
+      <ul>
+        <li>Recommend a variable annuity inside an already tax-deferred account (e.g., IRA) — redundant tax deferral, a classic unsuitable-sale trap</li>
+        <li>Push a 1035 exchange mainly to reset the surrender period / generate new commission with no client benefit</li>
+        <li>Sell to a client without assessing age, liquidity needs, time horizon — especially <strong>senior/vulnerable investors</strong> (heightened suitability + often a required senior-suitability form)</li>
+        <li>Ignore high surrender charges vs. client's near-term liquidity needs</li>
+        <li>Misrepresent a variable annuity's guarantees as risk-free — sub-account performance is NOT guaranteed</li>
+      </ul>
+    </div>
+  </div>
+  <div class="hook-box"><b>🧠 Exam trap:</b> the #1 tested unsuitable annuity sale is "variable annuity recommended inside an IRA for the tax-deferral benefit" — the IRA is already tax-deferred, so that reasoning is a red flag every time it appears in a question stem.</div>
+</div>
+
+</div>
+</body>
+</html>
