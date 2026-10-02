@@ -166,7 +166,8 @@ canvas.chart { width:100%; height:auto; display:block; background:#151c28; borde
         </div>
         <div class="row" id="limitRow" style="display:none">
           <div class="field"><label for="limitPx">Limit price ($)</label>
-          <input type="number" id="limitPx" value="48" min="1" step="0.01" /></div>
+          <input type="number" id="limitPx" value="48" min="1" step="0.01" />
+          <span style="font-size:.75rem;color:var(--muted);display:block;margin-top:.25rem">Buy limit rests <em>below</em> the market. At or above spot = fills now (marketable).</span></div>
         </div>
         <div class="row" id="stopRow" style="display:none">
           <div class="field"><label for="stopPx">Stop price ($)</label>
@@ -570,8 +571,10 @@ canvas.chart { width:100%; height:auto; display:block; background:#151c28; borde
     document.getElementById("stopRow").style.display = t === "stop" ? "flex" : "none";
     document.getElementById("stopLimitRow").style.display = t === "stopLimit" ? "flex" : "none";
     document.getElementById("ordDef").innerHTML = "<strong>Definition.</strong> " + DEFS[t];
+    if (typeof syncOrderDefaults === "function") syncOrderDefaults();
   }
   ordType.addEventListener("change", updateOrdUI);
+  // syncOrderDefaults is defined later; call updateOrdUI after it exists via boot at end of orders block
   updateOrdUI();
   function currentIdx() { return +document.getElementById("playhead").value; }
   function currentPx() { return pricePath[currentIdx()]; }
@@ -585,54 +588,84 @@ canvas.chart { width:100%; height:auto; display:block; background:#151c28; borde
     else if (orderState.elected) { st.textContent = "Elected"; st.className = "v warn"; }
     else { st.textContent = "Working"; st.className = "v warn"; }
   }
-  function showOrderOutcome(filled, px, cost) {
+  function showOrderOutcome(filled, px, cost, reason) {
     var box = document.getElementById("ordOutcome");
     box.style.display = "block";
     if (filled) {
       box.className = "outcome-box filled";
+      var extra = "";
+      if (reason === "marketable-limit") {
+        extra = " <em>Marketable limit:</em> spot was already at or below your limit, so it filled immediately at the market (not by waiting for the green line from below).";
+      }
       box.innerHTML = "<strong>Filled.</strong> " + orderState.shares + " shares @ " + money(px) +
-        ". Cash impact: −" + money(cost) + ". New cash " + money(orderState.cash) + ", shares " + orderState.sharesHeld + ".";
+        ". Cash impact: −" + money(cost) + ". New cash " + money(orderState.cash) + ", shares " + orderState.sharesHeld + "." + extra;
+      var coachExtra = "";
+      if (reason === "marketable-limit") {
+        coachExtra = "<p><strong>Why so fast?</strong> A buy limit at " + money(orderState.limit) +
+          " means “pay up to this.” Spot was already " + money(px) +
+          ", which is better for you — so the order is marketable and fills now, like a market order on price. " +
+          "To watch a resting limit, set the buy limit <strong>below</strong> current spot, then Play the path until price dips to (or under) that line.</p>";
+      } else if (reason === "limit") {
+        coachExtra = "<p>Price traded at or below your limit — that is when a resting buy limit fills. Fill price is the trade price (or the limit if you prefer to think of the cap).</p>";
+      } else if (reason === "market") {
+        coachExtra = "<p>Market orders fill at once at the prevailing price. No waiting for a line.</p>";
+      } else {
+        coachExtra = "<p>If price had moved away from your instructions, a limit or stop-limit might still be working — market and elected stops prioritize getting filled.</p>";
+      }
       setCoach("ordCoach",
         "<p><strong>Filled outcome.</strong> Your " + orderState.type + " buy executed at " + money(px) +
-        " for " + orderState.shares + " shares. Cost " + money(cost) + ".</p>" +
-        "<p>If price had moved away from your instructions, a limit or stop-limit might still be working — market and elected stops prioritize getting filled.</p>");
+        " for " + orderState.shares + " shares. Cost " + money(cost) + ".</p>" + coachExtra);
     } else {
       box.className = "outcome-box unfilled";
       var why = "still working — conditions not met yet.";
-      if (orderState.type === "limit") why = "unfilled: spot has not traded at or below your limit of " + money(orderState.limit) + ".";
-      if (orderState.type === "stop") why = "not elected: spot has not traded at or above your stop of " + money(orderState.stop) + ".";
+      if (orderState.type === "limit") why = "resting: waiting for the price path to trade at or below your limit of " + money(orderState.limit) + ". Play or scrub forward — it will not fill just because you placed it.";
+      if (orderState.type === "stop") why = "not elected: waiting for the path to trade at or above your stop of " + money(orderState.stop) + ".";
       if (orderState.type === "stopLimit") {
         why = orderState.elected
-          ? "elected but unfilled: after the stop, price has not been at or below your limit of " + money(orderState.limit) + "."
-          : "not elected: spot has not hit stop " + money(orderState.stop) + ".";
+          ? "elected but unfilled: after the stop, waiting for a trade at or below your limit of " + money(orderState.limit) + "."
+          : "not elected: waiting for stop " + money(orderState.stop) + ".";
       }
-      box.innerHTML = "<strong>Not filled.</strong> Order is " + why + " Cash and shares unchanged.";
+      box.innerHTML = "<strong>Working — not filled.</strong> " + why + " Cash and shares unchanged.";
       setCoach("ordCoach",
         "<p><strong>Not filled (yet).</strong> " + why + "</p>" +
-        "<p>Exam contrast: a market order would already be done at the prevailing price. A limit protects price but risks missing the trade. A buy stop waits for upside strength. A stop-limit can miss a runaway move after election.</p>");
+        "<p>Exam contrast: a market order would already be done at the prevailing price. A resting buy limit sits below the market and fills only when price comes down to it (or better). A buy stop waits for upside. A stop-limit can miss a runaway move after election.</p>");
     }
   }
-  function fillOrder(px) {
+  function fillOrder(px, reason) {
     orderState.filled = true;
     orderState.fillPrice = px;
     var cost = px * orderState.shares;
     orderState.cash -= cost;
     orderState.sharesHeld += orderState.shares;
-    showOrderOutcome(true, px, cost);
+    showOrderOutcome(true, px, cost, reason);
     refreshBalances();
     drawOrderChart();
   }
-  function evaluateOrder(upto) {
+  function evaluateOrder(upto, fromPlace) {
     if (!orderState.type || orderState.filled) return;
     var i, px, start = orderState.placedAt;
     for (i = start; i <= upto; i++) {
       px = pricePath[i];
-      if (orderState.type === "market") { fillOrder(px); return; }
-      if (orderState.type === "limit" && px <= orderState.limit) { fillOrder(Math.min(px, orderState.limit)); return; }
-      if (orderState.type === "stop" && px >= orderState.stop) { fillOrder(px); return; }
+      if (orderState.type === "market") {
+        // Market: fill only at the placement bar (prevailing price), not by scrubbing history.
+        if (i === orderState.placedAt) { fillOrder(px, fromPlace ? "market" : null); return; }
+        continue;
+      }
+      if (orderState.type === "limit" && px <= orderState.limit + 1e-9) {
+        // Buy limit: at or better (lower). Fill at the trade price, not higher than limit.
+        fillOrder(Math.min(px, orderState.limit), fromPlace && i === orderState.placedAt ? "marketable-limit" : "limit");
+        return;
+      }
+      if (orderState.type === "stop" && px >= orderState.stop - 1e-9) {
+        fillOrder(px, "stop");
+        return;
+      }
       if (orderState.type === "stopLimit") {
-        if (!orderState.elected && px >= orderState.stop) orderState.elected = true;
-        if (orderState.elected && px <= orderState.limit) { fillOrder(Math.min(px, orderState.limit)); return; }
+        if (!orderState.elected && px >= orderState.stop - 1e-9) orderState.elected = true;
+        if (orderState.elected && px <= orderState.limit + 1e-9) {
+          fillOrder(Math.min(px, orderState.limit), "stop-limit");
+          return;
+        }
       }
     }
     showOrderOutcome(false);
@@ -643,6 +676,18 @@ canvas.chart { width:100%; height:auto; display:block; background:#151c28; borde
       stop: (orderState.type === "stop" || orderState.type === "stopLimit") ? orderState.stop : null,
       limit: (orderState.type === "limit" || orderState.type === "stopLimit") ? orderState.limit : null
     });
+  }
+  function syncOrderDefaults() {
+    var spot = currentPx();
+    var lim = document.getElementById("limitPx");
+    var stp = document.getElementById("stopPx");
+    var sls = document.getElementById("slStop");
+    var sll = document.getElementById("slLimit");
+    // Resting buy limit default: a few dollars under spot so Place does not instantly fill.
+    lim.value = (Math.floor((spot - 2) * 100) / 100).toFixed(2);
+    stp.value = (Math.ceil((spot + 2) * 100) / 100).toFixed(2);
+    sls.value = (Math.ceil((spot + 2) * 100) / 100).toFixed(2);
+    sll.value = (Math.ceil((spot + 2.5) * 100) / 100).toFixed(2);
   }
   document.getElementById("placeOrder").addEventListener("click", function () {
     var shares = +document.getElementById("ordShares").value || 0;
@@ -658,8 +703,9 @@ canvas.chart { width:100%; height:auto; display:block; background:#151c28; borde
       orderState.stop = +document.getElementById("slStop").value;
       orderState.limit = +document.getElementById("slLimit").value;
     }
-    setCoach("ordCoach", "<p><strong>Order placed.</strong> " + DEFS[orderState.type] + "</p><p>Play or scrub the chart. I will announce fill vs no-fill and the cash impact.</p>");
-    evaluateOrder(currentIdx());
+    document.getElementById("ordOutcome").style.display = "none";
+    setCoach("ordCoach", "<p><strong>Order placed.</strong> " + DEFS[orderState.type] + "</p><p>Play or scrub the chart. A resting buy limit fills only when the path trades at or below the green limit line.</p>");
+    evaluateOrder(currentIdx(), true);
     refreshBalances();
     drawOrderChart();
   });
