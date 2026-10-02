@@ -1,0 +1,1206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<meta name="theme-color" content="#1a2332" />
+<title>Series 65 Trading Tutor — Paul Benner</title>
+<style>
+:root {
+  --bg: #1a2332; --bg2: #243044; --bg3: #2c3a52; --card: #243044;
+  --ink: #e8eef6; --muted: #9aa8bc; --accent: #d4a84b; --accent2: #c4893a;
+  --good: #3dba7e; --bad: #e06b6b; --warn: #e0b05a; --line: #3a4a63;
+  --radius: 12px; --font: "Segoe UI", system-ui, -apple-system, sans-serif;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: var(--font); background: var(--bg); color: var(--ink); line-height: 1.5; min-height: 100vh; padding-bottom: 4rem; }
+a { color: var(--accent); }
+header.appbar { background: linear-gradient(180deg,#1e2a3c,#1a2332); border-bottom:1px solid var(--line); padding:.85rem 1.25rem; position:sticky; top:0; z-index:40; }
+.bar-inner { max-width:1100px; margin:0 auto; display:flex; align-items:center; gap:1rem; flex-wrap:wrap; }
+.mark { width:42px; height:42px; border-radius:10px; background:var(--accent); color:#1a2332; font-weight:800; font-size:1.1rem; display:grid; place-items:center; }
+.titles h1 { font-size:1.15rem; font-weight:700; }
+.titles p { font-size:.8rem; color:var(--muted); }
+.home-link { margin-left:auto; background:var(--bg3); color:var(--ink); border:1px solid var(--line); border-radius:8px; padding:.45rem .9rem; text-decoration:none; font-size:.9rem; }
+.home-link:hover { border-color:var(--accent); }
+.wrap { max-width:1100px; margin:0 auto; padding:1.25rem; }
+.hero { background:var(--card); border:1px solid var(--line); border-radius:var(--radius); padding:1.1rem 1.25rem; margin-bottom:1rem; }
+.hero h2 { font-size:1.05rem; color:var(--accent); margin-bottom:.35rem; }
+.hero p { color:var(--muted); font-size:.9rem; }
+.tabs { display:flex; flex-wrap:wrap; gap:.4rem; margin-bottom:1rem; }
+.tab { background:var(--bg2); color:var(--muted); border:1px solid var(--line); border-radius:999px; padding:.45rem .95rem; cursor:pointer; font-size:.88rem; }
+.tab:hover { color:var(--ink); border-color:var(--accent2); }
+.tab.active { background:var(--accent); color:#1a2332; border-color:var(--accent); font-weight:650; }
+.panel { display:none; }
+.panel.active { display:block; }
+.grid2 { display:grid; grid-template-columns:1.2fr 1fr; gap:1rem; }
+@media (max-width:860px){ .grid2 { grid-template-columns:1fr; } }
+.card { background:var(--card); border:1px solid var(--line); border-radius:var(--radius); padding:1rem 1.1rem; }
+.card h3 { font-size:.95rem; color:var(--accent); margin-bottom:.65rem; }
+label { display:block; font-size:.78rem; color:var(--muted); margin-bottom:.2rem; }
+.row { display:flex; flex-wrap:wrap; gap:.6rem; margin-bottom:.7rem; align-items:flex-end; }
+.field { flex:1; min-width:100px; }
+input[type=number],input[type=text],select { width:100%; background:var(--bg); border:1px solid var(--line); color:var(--ink); border-radius:8px; padding:.45rem .6rem; font-size:.92rem; }
+input:focus,select:focus { outline:2px solid var(--accent2); border-color:transparent; }
+.btn { background:var(--bg3); color:var(--ink); border:1px solid var(--line); border-radius:8px; padding:.45rem .85rem; cursor:pointer; font-size:.88rem; }
+.btn:hover { border-color:var(--accent); }
+.btn.primary { background:var(--accent); color:#1a2332; border-color:var(--accent); font-weight:650; }
+.btn.good { background:#2a5a42; border-color:var(--good); }
+.btn.ghost { background:transparent; }
+.btn:disabled { opacity:.45; cursor:not-allowed; }
+.voice-bar { display:flex; flex-wrap:wrap; gap:.45rem; align-items:center; margin-top:.75rem; padding-top:.75rem; border-top:1px solid var(--line); }
+.voice-bar .status { font-size:.78rem; color:var(--muted); flex:1; min-width:120px; }
+.coach { background:var(--bg); border-left:3px solid var(--accent); border-radius:0 8px 8px 0; padding:.75rem .9rem; font-size:.9rem; margin-top:.6rem; max-height:280px; overflow-y:auto; }
+.coach p { margin-bottom:.55rem; }
+.coach p:last-child { margin-bottom:0; }
+.coach strong { color:var(--accent); }
+.pill { display:inline-block; font-size:.72rem; padding:.15rem .5rem; border-radius:999px; background:var(--bg3); color:var(--muted); margin-right:.3rem; border:1px solid var(--line); }
+.stat-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(110px,1fr)); gap:.5rem; margin:.6rem 0; }
+.stat { background:var(--bg); border:1px solid var(--line); border-radius:8px; padding:.5rem .65rem; }
+.stat .k { font-size:.7rem; color:var(--muted); text-transform:uppercase; letter-spacing:.04em; }
+.stat .v { font-size:1.05rem; font-weight:650; font-variant-numeric:tabular-nums; }
+.stat .v.good { color:var(--good); }
+.stat .v.bad { color:var(--bad); }
+.stat .v.warn { color:var(--warn); }
+canvas.chart { width:100%; height:auto; display:block; background:#151c28; border-radius:8px; border:1px solid var(--line); }
+.scenario-list { display:flex; flex-direction:column; gap:.5rem; }
+.scenario-btn { text-align:left; background:var(--bg); border:1px solid var(--line); border-radius:8px; padding:.7rem .85rem; cursor:pointer; color:var(--ink); font-size:.88rem; }
+.scenario-btn:hover,.scenario-btn.active { border-color:var(--accent); background:var(--bg3); }
+.scenario-btn .tag { font-size:.72rem; color:var(--accent); display:block; margin-bottom:.2rem; }
+.opt-list { display:flex; flex-wrap:wrap; gap:.4rem; margin-bottom:.8rem; }
+.opt-chip { background:var(--bg); border:1px solid var(--line); border-radius:999px; padding:.35rem .75rem; cursor:pointer; font-size:.82rem; color:var(--muted); }
+.opt-chip.active { background:var(--accent); color:#1a2332; border-color:var(--accent); font-weight:650; }
+.meter-wrap { margin:.7rem 0; }
+.meter-label { display:flex; justify-content:space-between; font-size:.75rem; color:var(--muted); margin-bottom:.25rem; }
+.meter { height:14px; background:var(--bg); border-radius:999px; overflow:hidden; border:1px solid var(--line); position:relative; }
+.meter .fill { height:100%; border-radius:999px; transition:width .25s,background .25s; }
+.meter .thresh { position:absolute; top:0; bottom:0; width:2px; background:var(--warn); }
+.choice-grid { display:flex; flex-direction:column; gap:.4rem; margin-top:.5rem; }
+.choice { text-align:left; background:var(--bg); border:1px solid var(--line); border-radius:8px; padding:.65rem .8rem; cursor:pointer; color:var(--ink); font-size:.88rem; }
+.choice:hover { border-color:var(--accent2); }
+.choice.correct { border-color:var(--good); background:#1e3a2e; }
+.choice.wrong { border-color:var(--bad); background:#3a1e1e; }
+.choice:disabled { cursor:default; }
+.def-box { font-size:.82rem; color:var(--muted); background:var(--bg); border-radius:8px; padding:.65rem .8rem; margin-top:.5rem; border:1px dashed var(--line); }
+.def-box strong { color:var(--ink); }
+.footer-note { font-size:.78rem; color:var(--muted); margin-top:1.5rem; text-align:center; }
+.slider-row { display:flex; align-items:center; gap:.6rem; margin:.5rem 0; }
+.slider-row input[type=range] { flex:1; accent-color:var(--accent); }
+.outcome-box { margin-top:.6rem; padding:.7rem .85rem; border-radius:8px; border:1px solid var(--line); background:var(--bg); font-size:.88rem; }
+.outcome-box.filled { border-color:var(--good); }
+.outcome-box.unfilled { border-color:var(--warn); }
+.outcome-box.loss { border-color:var(--bad); }
+.legend { display:flex; flex-wrap:wrap; gap:.7rem; font-size:.75rem; color:var(--muted); margin-top:.4rem; }
+.legend span::before { content:""; display:inline-block; width:10px; height:3px; margin-right:.35rem; vertical-align:middle; border-radius:2px; }
+.legend .price::before { background:#7eb8e8; }
+.legend .stop::before { background:var(--bad); }
+.legend .limit::before { background:var(--good); }
+.legend .entry::before { background:var(--accent); }
+</style>
+</head>
+<body>
+
+<header class="appbar">
+  <div class="bar-inner">
+    <div class="mark">65</div>
+    <div class="titles">
+      <h1>Series 65 Trading Tutor</h1>
+      <p>Paul Benner · orders · options · margin · short · fiduciary</p>
+    </div>
+    <a class="home-link" href="index.html">← Desk home</a>
+  </div>
+</header>
+<main class="wrap">
+  <section class="hero">
+    <h2>Simulated trading desk for the Uniform Investment Adviser Law Exam</h2>
+    <p>NASAA outline level. Equity order types, option strategies, Reg&nbsp;T margin, short sales, and suitability vs fiduciary duty. Study aid only — not live markets, not NASAA/FINRA materials.</p>
+  </section>
+  <nav class="tabs" role="tablist" aria-label="Tutor sections">
+    <button type="button" class="tab active" data-tab="orders" role="tab" aria-selected="true">Orders</button>
+    <button type="button" class="tab" data-tab="scenarios" role="tab">Scenarios</button>
+    <button type="button" class="tab" data-tab="options" role="tab">Options</button>
+    <button type="button" class="tab" data-tab="margin" role="tab">Margin</button>
+    <button type="button" class="tab" data-tab="short" role="tab">Short selling</button>
+    <button type="button" class="tab" data-tab="suitability" role="tab">Suitability &amp; fiduciary</button>
+  </nav>
+
+  <section id="panel-orders" class="panel active" role="tabpanel">
+    <div class="grid2">
+      <div class="card">
+        <h3>Simulated stock · buy orders</h3>
+        <canvas id="orderChart" class="chart" width="640" height="300" aria-label="Price chart with order lines"></canvas>
+        <div class="legend">
+          <span class="price">Price path</span>
+          <span class="stop">Stop</span>
+          <span class="limit">Limit</span>
+          <span class="entry">Playhead</span>
+        </div>
+        <div class="slider-row">
+          <label for="playhead">Time</label>
+          <input type="range" id="playhead" min="0" max="59" value="0" />
+          <button type="button" class="btn" id="playPrice">Play</button>
+          <button type="button" class="btn ghost" id="resetPrice">Reset</button>
+        </div>
+        <div class="stat-grid">
+          <div class="stat"><div class="k">Spot</div><div class="v" id="spotPx">$50.00</div></div>
+          <div class="stat"><div class="k">Cash</div><div class="v" id="cashBal">$10,000</div></div>
+          <div class="stat"><div class="k">Shares</div><div class="v" id="shareBal">0</div></div>
+          <div class="stat"><div class="k">Order status</div><div class="v" id="ordStatus">—</div></div>
+        </div>
+      </div>
+      <div class="card">
+        <h3>Place a buy order</h3>
+        <div class="row">
+          <div class="field">
+            <label for="ordType">Order type</label>
+            <select id="ordType">
+              <option value="market">Market</option>
+              <option value="limit">Limit</option>
+              <option value="stop">Stop (buy stop)</option>
+              <option value="stopLimit">Stop-limit</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="ordShares">Shares</label>
+            <input type="number" id="ordShares" value="100" min="1" step="1" />
+          </div>
+        </div>
+        <div class="row" id="limitRow" style="display:none">
+          <div class="field"><label for="limitPx">Limit price ($)</label>
+          <input type="number" id="limitPx" value="48" min="1" step="0.01" /></div>
+        </div>
+        <div class="row" id="stopRow" style="display:none">
+          <div class="field"><label for="stopPx">Stop price ($)</label>
+          <input type="number" id="stopPx" value="52" min="1" step="0.01" /></div>
+        </div>
+        <div class="row" id="stopLimitRow" style="display:none">
+          <div class="field"><label for="slStop">Stop price ($)</label>
+          <input type="number" id="slStop" value="52" min="1" step="0.01" /></div>
+          <div class="field"><label for="slLimit">Limit price ($)</label>
+          <input type="number" id="slLimit" value="52.50" min="1" step="0.01" /></div>
+        </div>
+        <div class="row">
+          <button type="button" class="btn primary" id="placeOrder">Place buy order</button>
+          <button type="button" class="btn" id="cancelOrder">Cancel</button>
+        </div>
+        <div class="def-box" id="ordDef"></div>
+        <div id="ordOutcome" class="outcome-box" style="display:none"></div>
+        <div class="coach" id="ordCoach">
+          <p><strong>Tutor.</strong> Pick an order type, place it, then scrub or play the price path. Watch when the order would trigger or remain unfilled. Series 65: market fills at the prevailing price; limit only at limit or better; a buy stop rests above the market and becomes a market order when elected; a stop-limit needs both a stop (election) and a limit (fill max). Sell stops protect longs and sit below the market.</p>
+        </div>
+        <div class="voice-bar">
+          <button type="button" class="btn primary" data-voice="ordCoach">Play</button>
+          <button type="button" class="btn" data-voice-pause>Pause</button>
+          <button type="button" class="btn" data-voice-replay="ordCoach">Replay</button>
+          <span class="status" data-voice-status>Voice ready</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="panel-scenarios" class="panel" role="tabpanel">
+    <div class="grid2">
+      <div class="card">
+        <h3>Order coaching scenarios</h3>
+        <div class="scenario-list" id="scenList"></div>
+      </div>
+      <div class="card">
+        <h3 id="scenTitle">Select a scenario</h3>
+        <canvas id="scenChart" class="chart" width="640" height="240" aria-label="Scenario price chart"></canvas>
+        <div class="coach" id="scenCoach">
+          <p>Choose a scenario on the left. The tutor will walk through which order type fits and what happens if price goes the other way.</p>
+        </div>
+        <div class="voice-bar">
+          <button type="button" class="btn primary" data-voice="scenCoach">Play</button>
+          <button type="button" class="btn" data-voice-pause>Pause</button>
+          <button type="button" class="btn" data-voice-replay="scenCoach">Replay</button>
+          <span class="status" data-voice-status>Voice ready</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="panel-options" class="panel" role="tabpanel">
+    <div class="card" style="margin-bottom:1rem">
+      <h3>Option strategies (Series 65 level)</h3>
+      <div class="opt-list" id="optList"></div>
+      <div class="grid2">
+        <div>
+          <canvas id="payoffChart" class="chart" width="640" height="320" aria-label="Options payoff diagram"></canvas>
+          <div class="stat-grid" id="optStats"></div>
+        </div>
+        <div>
+          <div class="coach" id="optCoach"><p>Select a strategy.</p></div>
+          <div class="voice-bar">
+            <button type="button" class="btn primary" data-voice="optCoach">Play</button>
+            <button type="button" class="btn" data-voice-pause>Pause</button>
+            <button type="button" class="btn" data-voice-replay="optCoach">Replay</button>
+            <span class="status" data-voice-status>Voice ready</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="panel-margin" class="panel" role="tabpanel">
+    <div class="grid2">
+      <div class="card">
+        <h3>Reg T margin demo (Series 65 level)</h3>
+        <p style="font-size:.85rem;color:var(--muted);margin-bottom:.7rem">Initial margin under Reg&nbsp;T is generally <strong style="color:var(--ink)">50%</strong> of the purchase. Maintenance margin is typically <strong style="color:var(--ink)">25%</strong> of market value (exam-classic FINRA/exchange minimum; firms may set higher).</p>
+        <div class="row">
+          <div class="field"><label for="mShares">Shares to buy</label>
+            <input type="number" id="mShares" value="200" min="1" step="1" /></div>
+          <div class="field"><label for="mPrice">Purchase price ($)</label>
+            <input type="number" id="mPrice" value="50" min="1" step="0.01" /></div>
+          <div class="field"><label for="mCash">Cash deposited ($)</label>
+            <input type="number" id="mCash" value="5000" min="0" step="100" /></div>
+        </div>
+        <div class="row">
+          <button type="button" class="btn primary" id="mBuy">Buy on margin</button>
+          <button type="button" class="btn" id="mReset">Reset</button>
+        </div>
+        <div class="slider-row">
+          <label for="mSpot">Mark-to-market</label>
+          <input type="range" id="mSpot" min="20" max="80" value="50" step="0.5" disabled />
+          <span id="mSpotLbl" style="min-width:4.5rem;font-variant-numeric:tabular-nums">$50.00</span>
+        </div>
+        <canvas id="marginChart" class="chart" width="640" height="220" aria-label="Margin equity chart"></canvas>
+        <div class="meter-wrap">
+          <div class="meter-label"><span>Equity / market value</span><span id="mPctLbl">—</span></div>
+          <div class="meter" id="mMeter">
+            <div class="fill" id="mFill" style="width:0%;background:var(--good)"></div>
+            <div class="thresh" id="mThresh" style="left:25%" title="25% maintenance"></div>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <h3>Account snapshot</h3>
+        <div class="stat-grid">
+          <div class="stat"><div class="k">Market value</div><div class="v" id="mMV">—</div></div>
+          <div class="stat"><div class="k">Debit balance</div><div class="v" id="mDebit">—</div></div>
+          <div class="stat"><div class="k">Equity</div><div class="v" id="mEq">—</div></div>
+          <div class="stat"><div class="k">Equity %</div><div class="v" id="mEqPct">—</div></div>
+          <div class="stat"><div class="k">Maint. req.</div><div class="v" id="mMaint">—</div></div>
+          <div class="stat"><div class="k">Status</div><div class="v" id="mStatus">Idle</div></div>
+        </div>
+        <div class="def-box">
+          <strong>Equity</strong> = market value − debit balance.<br/>
+          <strong>Margin call</strong> when equity falls below maintenance (here 25% × MV). Leverage magnifies losses as well as gains.
+        </div>
+        <div class="coach" id="mCoach">
+          <p><strong>Tutor.</strong> Deposit cash, buy more stock than cash alone would allow. Reg&nbsp;T initial margin is 50%: on a $10,000 purchase put up at least $5,000; the rest is a debit loan. Drag mark-to-market down and watch equity shrink. When equity % hits the maintenance floor, you are in a margin call.</p>
+        </div>
+        <div class="voice-bar">
+          <button type="button" class="btn primary" data-voice="mCoach">Play</button>
+          <button type="button" class="btn" data-voice-pause>Pause</button>
+          <button type="button" class="btn" data-voice-replay="mCoach">Replay</button>
+          <span class="status" data-voice-status>Voice ready</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="panel-short" class="panel" role="tabpanel">
+    <div class="grid2">
+      <div class="card">
+        <h3>Short sale simulation</h3>
+        <p style="font-size:.85rem;color:var(--muted);margin-bottom:.7rem">Borrow shares, sell them, later buy to cover. Must be in a <strong style="color:var(--ink)">margin account</strong>. Locate/borrow is conceptual at exam level. Risk is theoretically <strong style="color:var(--bad)">unlimited</strong> if the stock rises.</p>
+        <canvas id="shortChart" class="chart" width="640" height="260" aria-label="Short sale price chart"></canvas>
+        <div class="slider-row">
+          <label for="sPlayhead">Time</label>
+          <input type="range" id="sPlayhead" min="0" max="59" value="0" />
+          <button type="button" class="btn" id="sPlay">Play</button>
+          <button type="button" class="btn ghost" id="sResetPath">Reset path</button>
+        </div>
+        <div class="row">
+          <div class="field"><label for="sShares">Shares to short</label>
+            <input type="number" id="sShares" value="100" min="1" step="1" /></div>
+          <button type="button" class="btn primary" id="sOpen" style="align-self:flex-end">Sell short @ spot</button>
+          <button type="button" class="btn good" id="sCover" style="align-self:flex-end" disabled>Buy to cover</button>
+          <button type="button" class="btn" id="sReset" style="align-self:flex-end">Reset trade</button>
+        </div>
+        <div class="stat-grid">
+          <div class="stat"><div class="k">Spot</div><div class="v" id="sSpot">$50.00</div></div>
+          <div class="stat"><div class="k">Short entry</div><div class="v" id="sEntry">—</div></div>
+          <div class="stat"><div class="k">Unrealized P/L</div><div class="v" id="sPnL">—</div></div>
+          <div class="stat"><div class="k">Position</div><div class="v" id="sPos">Flat</div></div>
+        </div>
+      </div>
+      <div class="card">
+        <h3>Coach</h3>
+        <div id="sOutcome" class="outcome-box" style="display:none"></div>
+        <div class="coach" id="sCoach">
+          <p><strong>Tutor.</strong> Sell short at spot — borrow and sell. Profit if price falls; loss if price rises — no ceiling on upside, so risk is theoretically unlimited. Play the path, then Buy to cover. Series 65: shorts require a margin account; the short seller may owe dividends to the lender.</p>
+        </div>
+        <div class="voice-bar">
+          <button type="button" class="btn primary" data-voice="sCoach">Play</button>
+          <button type="button" class="btn" data-voice-pause>Pause</button>
+          <button type="button" class="btn" data-voice-replay="sCoach">Replay</button>
+          <span class="status" data-voice-status>Voice ready</span>
+        </div>
+        <div class="def-box" style="margin-top:.8rem">
+          <strong>P/L per share</strong> = short sale price − cover price.<br/>
+          Short at $50, cover at $40 → $10 gain. Short at $50, cover at $70 → $20 loss.
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="panel-suitability" class="panel" role="tabpanel">
+    <div class="grid2">
+      <div class="card">
+        <h3>Client vignettes</h3>
+        <p style="font-size:.85rem;color:var(--muted);margin-bottom:.7rem">Series 65 is an <strong style="color:var(--ink)">adviser</strong> exam: default hat is <strong style="color:var(--accent)">fiduciary</strong> (care + loyalty). Broker-dealer recommendations are tested under <strong style="color:var(--ink)">suitability</strong>. Dual registrants: the account controls the duty.</p>
+        <div class="scenario-list" id="suitList"></div>
+      </div>
+      <div class="card">
+        <h3 id="suitTitle">Select a vignette</h3>
+        <div id="suitProfile" class="def-box" style="margin-top:0">Pick a client on the left.</div>
+        <div class="choice-grid" id="suitChoices"></div>
+        <div class="coach" id="suitCoach" style="margin-top:.8rem">
+          <p>Read the profile, then choose the best action. The tutor explains suitability vs fiduciary.</p>
+        </div>
+        <div class="voice-bar">
+          <button type="button" class="btn primary" data-voice="suitCoach">Play</button>
+          <button type="button" class="btn" data-voice-pause>Pause</button>
+          <button type="button" class="btn" data-voice-replay="suitCoach">Replay</button>
+          <span class="status" data-voice-status>Voice ready</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <p class="footer-note">Educational simulation for Paul Benner · Series 65 · NASAA outline 6/12/2023 · Not live trading · Confirm current Reg T / maintenance figures against current releases before exam day.</p>
+</main>
+<script>
+
+(function () {
+  "use strict";
+
+  var synth = window.speechSynthesis || null;
+  var currentUtter = null;
+  var preferredVoice = null;
+
+  function pickVoice() {
+    if (!synth) return null;
+    var voices = synth.getVoices() || [];
+    if (!voices.length) return null;
+    var names = [/Samantha/i, /Google US English/i, /Microsoft (Aria|Jenny|Guy|Zira)/i, /Alex/i, /Daniel/i];
+    var prefer = [/en-US/i, /en-GB/i, /en/i];
+    var i, j;
+    for (i = 0; i < names.length; i++) {
+      for (j = 0; j < voices.length; j++) {
+        if (names[i].test(voices[j].name) && /en/i.test(voices[j].lang)) return voices[j];
+      }
+    }
+    for (i = 0; i < prefer.length; i++) {
+      for (j = 0; j < voices.length; j++) {
+        if (prefer[i].test(voices[j].lang)) return voices[j];
+      }
+    }
+    return voices[0];
+  }
+  if (synth) {
+    preferredVoice = pickVoice();
+    synth.onvoiceschanged = function () { preferredVoice = pickVoice(); };
+  }
+  function coachPlain(el) {
+    if (!el) return "";
+    return el.innerText.replace(/\s+/g, " ").trim();
+  }
+  function setVoiceStatus(btn, msg) {
+    var bar = btn && btn.closest ? btn.closest(".voice-bar") : null;
+    var st = bar ? bar.querySelector("[data-voice-status]") : null;
+    if (st) st.textContent = msg;
+  }
+  function stopVoice() {
+    if (synth) synth.cancel();
+    currentUtter = null;
+  }
+  function speakText(text, statusBtn) {
+    if (!synth) { setVoiceStatus(statusBtn, "Speech not supported in this browser"); return; }
+    stopVoice();
+    if (!text) return;
+    var u = new SpeechSynthesisUtterance(text);
+    u.rate = 0.96; u.pitch = 1;
+    if (preferredVoice) u.voice = preferredVoice;
+    u.onstart = function () { setVoiceStatus(statusBtn, "Speaking…"); };
+    u.onend = function () { setVoiceStatus(statusBtn, "Voice ready"); currentUtter = null; };
+    u.onerror = function () { setVoiceStatus(statusBtn, "Voice ready"); currentUtter = null; };
+    currentUtter = u;
+    synth.speak(u);
+  }
+  function speakCoach(id, btn) {
+    speakText(coachPlain(document.getElementById(id)), btn);
+  }
+  document.addEventListener("click", function (e) {
+    var t = e.target;
+    if (t.matches("[data-voice]")) speakCoach(t.getAttribute("data-voice"), t);
+    else if (t.matches("[data-voice-replay]")) speakCoach(t.getAttribute("data-voice-replay"), t);
+    else if (t.matches("[data-voice-pause]")) {
+      if (!synth) return;
+      if (synth.speaking && !synth.paused) { synth.pause(); setVoiceStatus(t, "Paused"); }
+      else if (synth.paused) { synth.resume(); setVoiceStatus(t, "Speaking…"); }
+    }
+  });
+
+  var tabs = document.querySelectorAll(".tab");
+  var panels = {
+    orders: document.getElementById("panel-orders"),
+    scenarios: document.getElementById("panel-scenarios"),
+    options: document.getElementById("panel-options"),
+    margin: document.getElementById("panel-margin"),
+    short: document.getElementById("panel-short"),
+    suitability: document.getElementById("panel-suitability")
+  };
+  tabs.forEach(function (tab) {
+    tab.addEventListener("click", function () {
+      stopVoice();
+      tabs.forEach(function (x) { x.classList.remove("active"); x.setAttribute("aria-selected", "false"); });
+      tab.classList.add("active");
+      tab.setAttribute("aria-selected", "true");
+      var id = tab.getAttribute("data-tab");
+      Object.keys(panels).forEach(function (k) { panels[k].classList.toggle("active", k === id); });
+      if (id === "orders") drawOrderChart();
+      if (id === "scenarios") drawScenChart();
+      if (id === "options") drawPayoff();
+      if (id === "margin") drawMarginChart();
+      if (id === "short") drawShortChart();
+    });
+  });
+
+  function money(n) {
+    if (!isFinite(n)) return "—";
+    var sign = n < 0 ? "-" : "";
+    return sign + "$" + Math.abs(n).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  }
+  function clamp(n, a, b) { return Math.max(a, Math.min(b, n)); }
+  function setCoach(id, html) { document.getElementById(id).innerHTML = html; }
+
+  function makePath(seed, start, len) {
+    var arr = [start], p = start, i, s = seed;
+    function rnd() { s = (s * 1103515245 + 12345) & 0x7fffffff; return s / 0x7fffffff; }
+    for (i = 1; i < len; i++) {
+      var r = (rnd() - 0.48) * 1.4;
+      if (i > 15 && i < 28) r += 0.35;
+      if (i > 35 && i < 48) r -= 0.45;
+      p = clamp(+(p + r).toFixed(2), 35, 70);
+      arr.push(p);
+    }
+    return arr;
+  }
+
+  function drawLineChart(canvas, prices, opts) {
+    opts = opts || {};
+    var ctx = canvas.getContext("2d");
+    var W = canvas.width, H = canvas.height;
+    var pad = { l: 48, r: 16, t: 16, b: 28 };
+    var plotW = W - pad.l - pad.r, plotH = H - pad.t - pad.b;
+    ctx.clearRect(0, 0, W, H);
+    ctx.fillStyle = "#151c28";
+    ctx.fillRect(0, 0, W, H);
+    var min = Math.min.apply(null, prices), max = Math.max.apply(null, prices);
+    [opts.stop, opts.limit, opts.entry, opts.cover].forEach(function (x) {
+      if (x != null) { min = Math.min(min, x); max = Math.max(max, x); }
+    });
+    var span = Math.max(2, max - min);
+    min -= span * 0.08; max += span * 0.08;
+    function xAt(i) { return pad.l + (i / (prices.length - 1)) * plotW; }
+    function yAt(p) { return pad.t + (1 - (p - min) / (max - min)) * plotH; }
+    var g, gy;
+    ctx.strokeStyle = "#2a3548"; ctx.lineWidth = 1;
+    for (g = 0; g < 5; g++) {
+      gy = pad.t + (g / 4) * plotH;
+      ctx.beginPath(); ctx.moveTo(pad.l, gy); ctx.lineTo(W - pad.r, gy); ctx.stroke();
+      var pv = max - (g / 4) * (max - min);
+      ctx.fillStyle = "#7a8aa0"; ctx.font = "11px system-ui,sans-serif"; ctx.textAlign = "right";
+      ctx.fillText("$" + pv.toFixed(0), pad.l - 6, gy + 4);
+    }
+    function hLine(price, color) {
+      if (price == null) return;
+      var y = yAt(price);
+      ctx.strokeStyle = color; ctx.lineWidth = 1.5; ctx.setLineDash([6, 4]);
+      ctx.beginPath(); ctx.moveTo(pad.l, y); ctx.lineTo(W - pad.r, y); ctx.stroke();
+      ctx.setLineDash([]);
+      ctx.fillStyle = color; ctx.font = "11px system-ui,sans-serif"; ctx.textAlign = "left";
+      ctx.fillText("$" + price.toFixed(2), pad.l + 4, y - 4);
+    }
+    if (opts.limit != null) hLine(opts.limit, "#3dba7e");
+    if (opts.stop != null) hLine(opts.stop, "#e06b6b");
+    if (opts.entry != null) { ctx.setLineDash([]); hLine(opts.entry, "#d4a84b"); }
+    if (opts.cover != null) hLine(opts.cover, "#5b9fd4");
+    var playIdx = opts.playIdx != null ? opts.playIdx : prices.length - 1;
+    var i;
+    ctx.strokeStyle = "#7eb8e8"; ctx.lineWidth = 2; ctx.beginPath();
+    for (i = 0; i <= playIdx; i++) {
+      var x = xAt(i), y = yAt(prices[i]);
+      if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+    }
+    ctx.stroke();
+    if (playIdx < prices.length - 1) {
+      ctx.strokeStyle = "rgba(126,184,232,0.25)"; ctx.beginPath();
+      ctx.moveTo(xAt(playIdx), yAt(prices[playIdx]));
+      for (i = playIdx + 1; i < prices.length; i++) ctx.lineTo(xAt(i), yAt(prices[i]));
+      ctx.stroke();
+    }
+    var px = xAt(playIdx), py = yAt(prices[playIdx]);
+    ctx.fillStyle = "#d4a84b"; ctx.beginPath(); ctx.arc(px, py, 5, 0, Math.PI * 2); ctx.fill();
+    ctx.fillStyle = "#e8eef6"; ctx.font = "12px system-ui,sans-serif"; ctx.textAlign = "left";
+    ctx.fillText("$" + prices[playIdx].toFixed(2), px + 8, py - 8);
+  }
+
+  /* ===== ORDERS ===== */
+  var pricePath = makePath(42, 50, 60);
+  var orderState = { type:null, shares:0, limit:null, stop:null, elected:false, filled:false, fillPrice:null, cash:10000, sharesHeld:0, placedAt:0 };
+  var playTimer = null;
+  var ordType = document.getElementById("ordType");
+  var DEFS = {
+    market: "Market order: execute immediately at the best available (prevailing) price. Priority is speed, not price control. On the exam: fills at the market — no price guarantee.",
+    limit: "Limit buy: fill only at the limit price or lower (better). If the market never reaches your limit, the order may remain unfilled. You control price, not certainty of execution.",
+    stop: "Buy stop: stop price is placed above the current market. When the market trades at or through the stop, the order is elected and becomes a market order. Used to buy strength or cover a short. Sell stop / stop-loss sits below the market to protect a long.",
+    stopLimit: "Buy stop-limit: requires both a stop price (election) and a limit price (maximum you will pay). When the stop is elected it becomes a limit order — it will not fill above the limit, so it may never fill in a fast market."
+  };
+  function updateOrdUI() {
+    var t = ordType.value;
+    document.getElementById("limitRow").style.display = t === "limit" ? "flex" : "none";
+    document.getElementById("stopRow").style.display = t === "stop" ? "flex" : "none";
+    document.getElementById("stopLimitRow").style.display = t === "stopLimit" ? "flex" : "none";
+    document.getElementById("ordDef").innerHTML = "<strong>Definition.</strong> " + DEFS[t];
+  }
+  ordType.addEventListener("change", updateOrdUI);
+  updateOrdUI();
+  function currentIdx() { return +document.getElementById("playhead").value; }
+  function currentPx() { return pricePath[currentIdx()]; }
+  function refreshBalances() {
+    document.getElementById("spotPx").textContent = money(currentPx());
+    document.getElementById("cashBal").textContent = money(orderState.cash);
+    document.getElementById("shareBal").textContent = String(orderState.sharesHeld);
+    var st = document.getElementById("ordStatus");
+    if (!orderState.type) { st.textContent = "—"; st.className = "v"; }
+    else if (orderState.filled) { st.textContent = "Filled"; st.className = "v good"; }
+    else if (orderState.elected) { st.textContent = "Elected"; st.className = "v warn"; }
+    else { st.textContent = "Working"; st.className = "v warn"; }
+  }
+  function showOrderOutcome(filled, px, cost) {
+    var box = document.getElementById("ordOutcome");
+    box.style.display = "block";
+    if (filled) {
+      box.className = "outcome-box filled";
+      box.innerHTML = "<strong>Filled.</strong> " + orderState.shares + " shares @ " + money(px) +
+        ". Cash impact: −" + money(cost) + ". New cash " + money(orderState.cash) + ", shares " + orderState.sharesHeld + ".";
+      setCoach("ordCoach",
+        "<p><strong>Filled outcome.</strong> Your " + orderState.type + " buy executed at " + money(px) +
+        " for " + orderState.shares + " shares. Cost " + money(cost) + ".</p>" +
+        "<p>If price had moved away from your instructions, a limit or stop-limit might still be working — market and elected stops prioritize getting filled.</p>");
+    } else {
+      box.className = "outcome-box unfilled";
+      var why = "still working — conditions not met yet.";
+      if (orderState.type === "limit") why = "unfilled: spot has not traded at or below your limit of " + money(orderState.limit) + ".";
+      if (orderState.type === "stop") why = "not elected: spot has not traded at or above your stop of " + money(orderState.stop) + ".";
+      if (orderState.type === "stopLimit") {
+        why = orderState.elected
+          ? "elected but unfilled: after the stop, price has not been at or below your limit of " + money(orderState.limit) + "."
+          : "not elected: spot has not hit stop " + money(orderState.stop) + ".";
+      }
+      box.innerHTML = "<strong>Not filled.</strong> Order is " + why + " Cash and shares unchanged.";
+      setCoach("ordCoach",
+        "<p><strong>Not filled (yet).</strong> " + why + "</p>" +
+        "<p>Exam contrast: a market order would already be done at the prevailing price. A limit protects price but risks missing the trade. A buy stop waits for upside strength. A stop-limit can miss a runaway move after election.</p>");
+    }
+  }
+  function fillOrder(px) {
+    orderState.filled = true;
+    orderState.fillPrice = px;
+    var cost = px * orderState.shares;
+    orderState.cash -= cost;
+    orderState.sharesHeld += orderState.shares;
+    showOrderOutcome(true, px, cost);
+    refreshBalances();
+    drawOrderChart();
+  }
+  function evaluateOrder(upto) {
+    if (!orderState.type || orderState.filled) return;
+    var i, px, start = orderState.placedAt;
+    for (i = start; i <= upto; i++) {
+      px = pricePath[i];
+      if (orderState.type === "market") { fillOrder(px); return; }
+      if (orderState.type === "limit" && px <= orderState.limit) { fillOrder(Math.min(px, orderState.limit)); return; }
+      if (orderState.type === "stop" && px >= orderState.stop) { fillOrder(px); return; }
+      if (orderState.type === "stopLimit") {
+        if (!orderState.elected && px >= orderState.stop) orderState.elected = true;
+        if (orderState.elected && px <= orderState.limit) { fillOrder(Math.min(px, orderState.limit)); return; }
+      }
+    }
+    showOrderOutcome(false);
+  }
+  function drawOrderChart() {
+    drawLineChart(document.getElementById("orderChart"), pricePath, {
+      playIdx: currentIdx(),
+      stop: (orderState.type === "stop" || orderState.type === "stopLimit") ? orderState.stop : null,
+      limit: (orderState.type === "limit" || orderState.type === "stopLimit") ? orderState.limit : null
+    });
+  }
+  document.getElementById("placeOrder").addEventListener("click", function () {
+    var shares = +document.getElementById("ordShares").value || 0;
+    if (shares < 1) return;
+    orderState.cash = 10000; orderState.sharesHeld = 0;
+    orderState.type = ordType.value; orderState.shares = shares;
+    orderState.limit = null; orderState.stop = null;
+    orderState.elected = false; orderState.filled = false; orderState.fillPrice = null;
+    orderState.placedAt = currentIdx();
+    if (orderState.type === "limit") orderState.limit = +document.getElementById("limitPx").value;
+    if (orderState.type === "stop") orderState.stop = +document.getElementById("stopPx").value;
+    if (orderState.type === "stopLimit") {
+      orderState.stop = +document.getElementById("slStop").value;
+      orderState.limit = +document.getElementById("slLimit").value;
+    }
+    setCoach("ordCoach", "<p><strong>Order placed.</strong> " + DEFS[orderState.type] + "</p><p>Play or scrub the chart. I will announce fill vs no-fill and the cash impact.</p>");
+    evaluateOrder(currentIdx());
+    refreshBalances();
+    drawOrderChart();
+  });
+  document.getElementById("cancelOrder").addEventListener("click", function () {
+    if (orderState.filled) return;
+    orderState.type = null;
+    document.getElementById("ordOutcome").style.display = "none";
+    setCoach("ordCoach", "<p><strong>Order canceled.</strong> Working instructions cleared.</p>");
+    refreshBalances(); drawOrderChart();
+  });
+  document.getElementById("playhead").addEventListener("input", function () {
+    if (orderState.type && !orderState.filled) evaluateOrder(currentIdx());
+    refreshBalances(); drawOrderChart();
+  });
+  document.getElementById("playPrice").addEventListener("click", function () {
+    var btn = this;
+    if (playTimer) { clearInterval(playTimer); playTimer = null; btn.textContent = "Play"; return; }
+    btn.textContent = "Pause";
+    playTimer = setInterval(function () {
+      var ph = document.getElementById("playhead");
+      var v = +ph.value;
+      if (v >= 59) { clearInterval(playTimer); playTimer = null; btn.textContent = "Play"; return; }
+      ph.value = v + 1;
+      if (orderState.type && !orderState.filled) evaluateOrder(v + 1);
+      refreshBalances(); drawOrderChart();
+    }, 220);
+  });
+  document.getElementById("resetPrice").addEventListener("click", function () {
+    if (playTimer) { clearInterval(playTimer); playTimer = null; document.getElementById("playPrice").textContent = "Play"; }
+    document.getElementById("playhead").value = 0;
+    orderState = { type:null, shares:0, limit:null, stop:null, elected:false, filled:false, fillPrice:null, cash:10000, sharesHeld:0, placedAt:0 };
+    document.getElementById("ordOutcome").style.display = "none";
+    setCoach("ordCoach", "<p><strong>Reset.</strong> Cash back to $10,000. Place an order and animate the path.</p>");
+    refreshBalances(); drawOrderChart();
+  });
+  refreshBalances(); drawOrderChart();
+
+  /* ===== SCENARIOS ===== */
+  var SCENARIOS = [
+    {
+      tag: "Buy strength", title: "Break above resistance at $52",
+      path: makePath(7, 50, 60).map(function (p, i) { return i < 20 ? clamp(50 + (i - 10) * 0.05, 49, 51) : clamp(50 + (i - 20) * 0.22, 49, 62); }),
+      stop: 52, limit: null,
+      html: "<p><strong>Setup.</strong> Stock ~$50. You want to buy only if it breaks above resistance at $52 — confirmation of strength.</p><p><strong>Order.</strong> Use a <strong>buy stop</strong> at $52 (or buy stop-limit if you need a price cap). The stop sits above the market; when elected it becomes a market (or limit) order.</p><p><strong>If price falls instead.</strong> The buy stop is never elected. You stay flat — which is the point of waiting for the breakout.</p><p><strong>Exam tip.</strong> Buy stops buy strength or cover shorts. Sell stops (stop-loss) protect longs and sit below the market.</p>"
+    },
+    {
+      tag: "Protect a long", title: "You own shares at $50; protect downside",
+      path: makePath(11, 50, 60).map(function (p, i) { return i < 25 ? clamp(50 + Math.sin(i / 5) * 0.8, 48, 52) : clamp(50 - (i - 25) * 0.35, 38, 52); }),
+      stop: 47, limit: null,
+      html: "<p><strong>Setup.</strong> Long stock from $50. You will accept a small loss but want an exit if the thesis breaks.</p><p><strong>Order.</strong> Place a <strong>sell stop</strong> (stop-loss) below the market — e.g. $47. When the stock trades at or through $47, the stop is elected and becomes a market sell.</p><p><strong>If price rises.</strong> The sell stop rests untriggered; you keep the long.</p><p><strong>Caveat.</strong> A market sell after election can fill below the stop in a gap. A sell stop-limit adds a floor but may not fill.</p>"
+    },
+    {
+      tag: "Buy the dip", title: "Buy only if it dips to $48",
+      path: makePath(19, 50, 60).map(function (p, i) { return i < 30 ? clamp(50 - i * 0.08, 47.5, 50.5) : clamp(47.8 + (i - 30) * 0.15, 47.5, 55); }),
+      stop: null, limit: 48,
+      html: "<p><strong>Setup.</strong> Stock at $50. You will buy only on a pullback to $48 or better.</p><p><strong>Order.</strong> <strong>Limit buy</strong> at $48. Fills only at $48 or lower. You control price.</p><p><strong>If price rallies away.</strong> Order may never fill — you miss the trade. That is the limit-order trade-off versus a market order.</p><p><strong>Exam tip.</strong> Limit = price or better. Market = immediate at prevailing. Do not confuse a limit buy (at/below market) with a buy stop (above market).</p>"
+    },
+    {
+      tag: "Cap the chase", title: "Breakout but refuse to pay above $52.50",
+      path: makePath(23, 50, 60).map(function (p, i) {
+        if (i < 18) return clamp(50 + (i - 9) * 0.04, 49.2, 51);
+        if (i < 22) return 51 + (i - 18) * 0.6;
+        return clamp(53.5 + (i - 22) * 0.15, 52, 58);
+      }),
+      stop: 52, limit: 52.5,
+      html: "<p><strong>Setup.</strong> You want the breakout above $52, but refuse to chase above $52.50.</p><p><strong>Order.</strong> <strong>Buy stop-limit</strong>: stop $52, limit $52.50. Election at $52 turns it into a limit buy — fill only at $52.50 or better.</p><p><strong>If price gaps through $52.50.</strong> Stop is elected but the limit may never fill. You can miss a runaway move — the cost of price control.</p><p><strong>Exam tip.</strong> Stop-limit always needs two prices. Know election vs fill as separate events.</p>"
+    },
+    {
+      tag: "Get in now", title: "News hit — you need shares now",
+      path: makePath(31, 50, 60),
+      stop: null, limit: null,
+      html: "<p><strong>Setup.</strong> You have decided to buy immediately; price control is secondary.</p><p><strong>Order.</strong> <strong>Market buy</strong> — executes at the prevailing price. Certainty of fill, uncertainty of exact price.</p><p><strong>If the quote jumps.</strong> You still fill, possibly worse than the last print. That is why market orders are wrong when you have a hard price ceiling — use a limit or stop-limit instead.</p><p><strong>Exam tip.</strong> Market = speed. Limit = price discipline. Match the order to the objective.</p>"
+    }
+  ];
+  var scenActive = 0;
+  var scenList = document.getElementById("scenList");
+  SCENARIOS.forEach(function (s, i) {
+    var b = document.createElement("button");
+    b.type = "button";
+    b.className = "scenario-btn" + (i === 0 ? " active" : "");
+    b.innerHTML = '<span class="tag">' + s.tag + "</span>" + s.title;
+    b.addEventListener("click", function () {
+      scenActive = i;
+      scenList.querySelectorAll(".scenario-btn").forEach(function (x) { x.classList.remove("active"); });
+      b.classList.add("active");
+      showScenario(i);
+    });
+    scenList.appendChild(b);
+  });
+  function drawScenChart() {
+    var s = SCENARIOS[scenActive];
+    drawLineChart(document.getElementById("scenChart"), s.path, { playIdx: s.path.length - 1, stop: s.stop, limit: s.limit });
+  }
+  function showScenario(i) {
+    var s = SCENARIOS[i];
+    document.getElementById("scenTitle").textContent = s.title;
+    setCoach("scenCoach", s.html);
+    drawScenChart();
+  }
+  showScenario(0);
+
+  /* ===== OPTIONS ===== */
+  var STRATEGIES = [
+    { id:"longCall", name:"Long call",
+      maxGain:"Unlimited", maxLoss:"Premium paid", be:"K + premium",
+      use:"Bullish speculation; defined risk = premium.",
+      pl:function(S){ return Math.max(S-50,0)-3; },
+      explain:"<p><strong>Long call.</strong> Buy a call: pay a premium for the right to buy 100 shares at strike K. No obligation.</p><p><strong>Max loss</strong> = premium. <strong>Max gain</strong> = theoretically unlimited. <strong>Breakeven</strong> = strike + premium.</p><p><strong>Example.</strong> 50-call for $3. Stock to $60 at expiry: intrinsic $10 − $3 = $7/share. Stock ≤ $50: lose $3.</p><p><strong>When to use.</strong> Bullish with limited capital at risk. Buyer has a right; writer has an obligation.</p>" },
+    { id:"longPut", name:"Long put",
+      maxGain:"K − premium (stock → 0)", maxLoss:"Premium paid", be:"K − premium",
+      use:"Bearish bet or building block for protective put.",
+      pl:function(S){ return Math.max(50-S,0)-2; },
+      explain:"<p><strong>Long put.</strong> Buy a put: right to sell 100 shares at strike K. Pay premium.</p><p><strong>Max loss</strong> = premium. <strong>Max gain</strong> ≈ strike − premium. <strong>Breakeven</strong> = strike − premium.</p><p><strong>Example.</strong> 50-put for $2. Stock to $40: intrinsic $10 − $2 = $8. Stock ≥ $50: lose $2.</p><p><strong>When to use.</strong> Bearish view or insurance on long stock.</p>" },
+    { id:"coveredCall", name:"Covered call",
+      maxGain:"(K − cost) + premium", maxLoss:"Stock cost − premium (large)", be:"Stock cost − premium",
+      use:"Mildly bullish/neutral income. Not a crash hedge.",
+      pl:function(S){ return (S-50) + (2 - Math.max(S-55,0)); },
+      explain:"<p><strong>Covered call.</strong> Own the shares and sell a call. Keep the premium. If assigned, sell shares at the strike.</p><p><strong>Max gain</strong> ≈ (strike − cost basis) + premium. Upside is capped. Downside: still long stock — premium is only a small cushion.</p><p><strong>Example.</strong> Stock $50, sell 55-call for $2. Stock to $70: called at $55 → about $7 economic gain, not the full rally.</p><p><strong>Exam:</strong> covered call is not downside protection like a put.</p>" },
+    { id:"protectivePut", name:"Protective put",
+      maxGain:"Unlimited upside − put premium", maxLoss:"≈ (cost − K) + put premium", be:"Stock cost + put premium",
+      use:"Insurance on a long; floor under the position.",
+      pl:function(S){ return (S-50) + (Math.max(45-S,0)-1.5); },
+      explain:"<p><strong>Protective put.</strong> Own stock and buy a put. Like insurance: you can put shares at K.</p><p>Floor near the strike; upside remains; you pay the premium.</p><p><strong>Example.</strong> Stock $50, 45-put for $1.50. Stock to $30: put worth $15; loss contained. Stock to $80: put expires; keep rally minus $1.50.</p><p><strong>When to use.</strong> Want a downside floor while staying long. Contrast with covered call.</p>" },
+    { id:"bullCall", name:"Bull call spread",
+      maxGain:"Width − net debit", maxLoss:"Net debit", be:"Long strike + net debit",
+      use:"Moderately bullish; cheaper than long call; caps upside.",
+      pl:function(S){ return Math.max(S-50,0) - Math.max(S-55,0) - 2; },
+      explain:"<p><strong>Bull call spread.</strong> Buy call at K1, sell call at higher K2. Net debit. Defined max gain and max loss.</p><p><strong>Max loss</strong> = net debit. <strong>Max gain</strong> = (K2 − K1) − debit. <strong>Breakeven</strong> = K1 + debit.</p><p><strong>Example.</strong> Buy 50-call / sell 55-call for $2 debit. Width $5; max gain $3; max loss $2; BE $52.</p><p><strong>When to use.</strong> Bullish but willing to cap gains to reduce cost.</p>" },
+    { id:"bearPut", name:"Bear put spread",
+      maxGain:"Width − net debit", maxLoss:"Net debit", be:"Long put strike − net debit",
+      use:"Moderately bearish with defined risk.",
+      pl:function(S){ return Math.max(50-S,0) - Math.max(45-S,0) - 2; },
+      explain:"<p><strong>Bear put spread.</strong> Buy put at higher strike, sell put at lower strike. Net debit. Defined risk/reward.</p><p><strong>Max loss</strong> = net debit. <strong>Max gain</strong> = width − debit. <strong>Breakeven</strong> = long strike − debit.</p><p><strong>Example.</strong> Buy 50-put / sell 45-put for $2. Max gain $3; max loss $2; BE $48.</p><p><strong>When to use.</strong> Bearish with a spending cap versus a naked long put.</p>" },
+    { id:"straddle", name:"Long straddle",
+      maxGain:"Unlimited up; large down to zero", maxLoss:"Total premiums", be:"K ± total premium (two BEs)",
+      use:"Expect a big move either way. Short straddle = unlimited risk.",
+      pl:function(S){ return Math.max(S-50,0) + Math.max(50-S,0) - 5; },
+      explain:"<p><strong>Long straddle.</strong> Buy ATM call and ATM put. Profit from a large move either way. Max loss = both premiums if stock pins at strike.</p><p><strong>Two breakevens:</strong> K + total premium and K − total premium.</p><p><strong>Short straddle (brief).</strong> Sell call + sell put: collect premium if stock stays quiet. Risk is <strong>theoretically unlimited</strong> on the upside (short call) and substantial to zero on the downside (short put). Series 65 emphasizes short-option risk — often unsuitable.</p><p><strong>When to use long.</strong> High expected volatility / event. Not a mild directional bet.</p>" }
+  ];
+  var optActive = 0;
+  var optList = document.getElementById("optList");
+  STRATEGIES.forEach(function (s, i) {
+    var b = document.createElement("button");
+    b.type = "button";
+    b.className = "opt-chip" + (i === 0 ? " active" : "");
+    b.textContent = s.name;
+    b.addEventListener("click", function () {
+      optActive = i;
+      optList.querySelectorAll(".opt-chip").forEach(function (x) { x.classList.remove("active"); });
+      b.classList.add("active");
+      showOpt(i);
+    });
+    optList.appendChild(b);
+  });
+  function drawPayoff() {
+    var s = STRATEGIES[optActive];
+    var canvas = document.getElementById("payoffChart");
+    var ctx = canvas.getContext("2d");
+    var W = canvas.width, H = canvas.height;
+    var pad = { l: 48, r: 16, t: 20, b: 32 };
+    var plotW = W - pad.l - pad.r, plotH = H - pad.t - pad.b;
+    ctx.clearRect(0, 0, W, H);
+    ctx.fillStyle = "#151c28"; ctx.fillRect(0, 0, W, H);
+    var Ss = [], pls = [], i, S;
+    for (i = 0; i <= 80; i++) { S = 30 + i * 0.5; Ss.push(S); pls.push(s.pl(S)); }
+    var minPL = Math.min.apply(null, pls), maxPL = Math.max.apply(null, pls);
+    var span = Math.max(4, maxPL - minPL);
+    minPL -= span * 0.15; maxPL += span * 0.15;
+    var minS = 30, maxS = 70;
+    function xAt(Sv) { return pad.l + ((Sv - minS) / (maxS - minS)) * plotW; }
+    function yAt(pl) { return pad.t + (1 - (pl - minPL) / (maxPL - minPL)) * plotH; }
+    var zeroY = yAt(0);
+    ctx.strokeStyle = "#2a3548"; ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.moveTo(pad.l, zeroY); ctx.lineTo(W - pad.r, zeroY); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(pad.l, pad.t); ctx.lineTo(pad.l, H - pad.b); ctx.stroke();
+    ctx.fillStyle = "#7a8aa0"; ctx.font = "11px system-ui,sans-serif"; ctx.textAlign = "right";
+    ctx.fillText("0", pad.l - 6, zeroY + 4);
+    ctx.textAlign = "center";
+    [30,40,50,60,70].forEach(function (sv) {
+      var x = xAt(sv);
+      ctx.strokeStyle = "#2a3548"; ctx.beginPath(); ctx.moveTo(x, pad.t); ctx.lineTo(x, H - pad.b); ctx.stroke();
+      ctx.fillStyle = "#7a8aa0"; ctx.fillText("$" + sv, x, H - 10);
+    });
+    ctx.strokeStyle = "#d4a84b"; ctx.lineWidth = 2.5; ctx.beginPath();
+    for (i = 0; i < Ss.length; i++) {
+      var x = xAt(Ss[i]), y = yAt(pls[i]);
+      if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+    }
+    ctx.stroke();
+    ctx.fillStyle = "#e8eef6"; ctx.font = "13px system-ui,sans-serif"; ctx.textAlign = "left";
+    ctx.fillText(s.name + " payoff at expiry (per share)", pad.l + 8, pad.t + 14);
+  }
+  function showOpt(i) {
+    var s = STRATEGIES[i];
+    setCoach("optCoach", s.explain);
+    document.getElementById("optStats").innerHTML =
+      '<div class="stat"><div class="k">Max gain</div><div class="v good" style="font-size:.82rem">' + s.maxGain + "</div></div>" +
+      '<div class="stat"><div class="k">Max loss</div><div class="v bad" style="font-size:.82rem">' + s.maxLoss + "</div></div>" +
+      '<div class="stat"><div class="k">Breakeven</div><div class="v" style="font-size:.82rem">' + s.be + "</div></div>" +
+      '<div class="stat"><div class="k">Exam use</div><div class="v" style="font-size:.78rem;font-weight:500">' + s.use + "</div></div>";
+    drawPayoff();
+  }
+  showOpt(0);
+
+  /* ===== MARGIN ===== */
+  var margin = { active:false, shares:0, debit:0, cost:0, hist:[] };
+  var MAINT_PCT = 0.25, INITIAL_PCT = 0.5;
+  function marginMetrics(spot) {
+    var mv = margin.shares * spot;
+    var eq = mv - margin.debit;
+    var eqPct = mv > 0 ? eq / mv : 0;
+    var maint = mv * MAINT_PCT;
+    return { mv:mv, eq:eq, eqPct:eqPct, maint:maint, call: eq < maint };
+  }
+  function drawMarginChart() {
+    var canvas = document.getElementById("marginChart");
+    var ctx = canvas.getContext("2d");
+    var W = canvas.width, H = canvas.height;
+    ctx.clearRect(0, 0, W, H);
+    ctx.fillStyle = "#151c28"; ctx.fillRect(0, 0, W, H);
+    if (!margin.active || margin.hist.length < 2) {
+      ctx.fillStyle = "#7a8aa0"; ctx.font = "13px system-ui,sans-serif";
+      ctx.fillText("Buy on margin, then drag mark-to-market to plot equity vs maintenance.", 24, H / 2);
+      return;
+    }
+    var pad = { l:48, r:16, t:16, b:28 };
+    var plotW = W - pad.l - pad.r, plotH = H - pad.t - pad.b;
+    var eqs = margin.hist.map(function (sp) { return marginMetrics(sp).eq; });
+    var maints = margin.hist.map(function (sp) { return marginMetrics(sp).maint; });
+    var all = eqs.concat(maints);
+    var min = Math.min.apply(null, all), max = Math.max.apply(null, all);
+    var span = Math.max(100, max - min);
+    min -= span * 0.1; max += span * 0.1;
+    function xAt(i) { return pad.l + (i / (margin.hist.length - 1)) * plotW; }
+    function yAt(v) { return pad.t + (1 - (v - min) / (max - min)) * plotH; }
+    ctx.strokeStyle = "#2a3548";
+    ctx.beginPath(); ctx.moveTo(pad.l, yAt(0)); ctx.lineTo(W - pad.r, yAt(0)); ctx.stroke();
+    ctx.strokeStyle = "#e0b05a"; ctx.setLineDash([5,4]); ctx.lineWidth = 1.5; ctx.beginPath();
+    maints.forEach(function (v, i) { if (i===0) ctx.moveTo(xAt(i), yAt(v)); else ctx.lineTo(xAt(i), yAt(v)); });
+    ctx.stroke(); ctx.setLineDash([]);
+    ctx.strokeStyle = "#3dba7e"; ctx.lineWidth = 2; ctx.beginPath();
+    eqs.forEach(function (v, i) { if (i===0) ctx.moveTo(xAt(i), yAt(v)); else ctx.lineTo(xAt(i), yAt(v)); });
+    ctx.stroke();
+    ctx.fillStyle = "#7a8aa0"; ctx.font = "11px system-ui,sans-serif";
+    ctx.fillText("Equity", pad.l + 4, pad.t + 12);
+    ctx.fillStyle = "#e0b05a"; ctx.fillText("Maint. req.", pad.l + 60, pad.t + 12);
+  }
+  function updateMarginUI() {
+    var spot = +document.getElementById("mSpot").value;
+    document.getElementById("mSpotLbl").textContent = money(spot);
+    if (!margin.active) {
+      ["mMV","mDebit","mEq","mEqPct","mMaint"].forEach(function (id) { document.getElementById(id).textContent = "—"; });
+      document.getElementById("mStatus").textContent = "Idle";
+      document.getElementById("mStatus").className = "v";
+      document.getElementById("mFill").style.width = "0%";
+      document.getElementById("mPctLbl").textContent = "—";
+      drawMarginChart();
+      return;
+    }
+    var m = marginMetrics(spot);
+    document.getElementById("mMV").textContent = money(m.mv);
+    document.getElementById("mDebit").textContent = money(margin.debit);
+    var eqEl = document.getElementById("mEq");
+    eqEl.textContent = money(m.eq);
+    eqEl.className = "v " + (m.eq < 0 ? "bad" : (m.call ? "warn" : "good"));
+    var pctEl = document.getElementById("mEqPct");
+    pctEl.textContent = (m.eqPct * 100).toFixed(1) + "%";
+    pctEl.className = "v " + (m.call ? "bad" : "good");
+    document.getElementById("mMaint").textContent = money(m.maint) + " (25%)";
+    var st = document.getElementById("mStatus");
+    if (m.call) { st.textContent = "MARGIN CALL"; st.className = "v bad"; }
+    else { st.textContent = "OK"; st.className = "v good"; }
+    var fillPct = clamp(m.eqPct * 100, 0, 100);
+    var fill = document.getElementById("mFill");
+    fill.style.width = fillPct + "%";
+    fill.style.background = m.call ? "var(--bad)" : (m.eqPct < 0.35 ? "var(--warn)" : "var(--good)");
+    document.getElementById("mPctLbl").textContent = fillPct.toFixed(1) + "% equity";
+    margin.hist.push(spot);
+    if (margin.hist.length > 60) margin.hist.shift();
+    drawMarginChart();
+  }
+  document.getElementById("mBuy").addEventListener("click", function () {
+    var shares = +document.getElementById("mShares").value;
+    var price = +document.getElementById("mPrice").value;
+    var cash = +document.getElementById("mCash").value;
+    var cost = shares * price;
+    var required = cost * INITIAL_PCT;
+    if (cash < required) {
+      setCoach("mCoach",
+        "<p><strong>Reg T block.</strong> Purchase " + money(cost) + " needs initial margin of at least 50% = " + money(required) +
+        ". You deposited only " + money(cash) + ". Increase cash or reduce size.</p>" +
+        "<p>Exam: Reg T initial margin on long equity is generally 50%. Maintenance is separate and lower (classic 25%).</p>");
+      return;
+    }
+    if (cash > cost) {
+      margin = { active:true, shares:shares, debit:0, cost:cost, hist:[price] };
+      setCoach("mCoach", "<p><strong>Bought with cash to spare.</strong> No debit — not using leverage. To see margin risk, deposit closer to 50% of the purchase.</p>");
+    } else {
+      margin = { active:true, shares:shares, debit:cost - cash, cost:cost, hist:[price] };
+      setCoach("mCoach",
+        "<p><strong>Bought on margin.</strong> MV " + money(cost) + ". Deposited " + money(cash) +
+        ". Debit (loan) = " + money(cost - cash) + ".</p>" +
+        "<p>Reg T initial ≥50%. Drag mark-to-market down. Equity = MV − debit. When equity &lt; 25% of MV → margin call.</p>" +
+        "<p><strong>Risk.</strong> Leverage magnifies losses: a modest stock drop can erase a large share of your equity.</p>");
+    }
+    document.getElementById("mSpot").disabled = false;
+    document.getElementById("mSpot").value = price;
+    document.getElementById("mSpot").min = Math.max(1, Math.floor(price * 0.3));
+    document.getElementById("mSpot").max = Math.ceil(price * 1.6);
+    updateMarginUI();
+  });
+  document.getElementById("mSpot").addEventListener("input", function () {
+    updateMarginUI();
+    if (!margin.active) return;
+    var spot = +this.value;
+    var m = marginMetrics(spot);
+    var buyPx = +document.getElementById("mPrice").value;
+    var drop = ((spot - buyPx) / buyPx) * 100;
+    var msg = m.call
+      ? "<p><strong>Margin call at " + money(spot) + ".</strong> Equity " + money(m.eq) + " &lt; maintenance " + money(m.maint) +
+        ". Stock move " + drop.toFixed(1) + "%. Equity % = " + (m.eqPct*100).toFixed(1) + "%.</p>" +
+        "<p>Deposit cash or liquidate. Leverage turned a price drop into a capital crisis.</p>"
+      : "<p>Mark " + money(spot) + " (" + drop.toFixed(1) + "% vs purchase). Equity " + money(m.eq) + " = " +
+        (m.eqPct*100).toFixed(1) + "% of MV. Cushion above maint: " + money(m.eq - m.maint) + ".</p>" +
+        "<p>Keep dragging down toward a call. Debit stays ~constant (ignoring interest); equity absorbs the swing.</p>";
+    setCoach("mCoach", msg);
+  });
+  document.getElementById("mReset").addEventListener("click", function () {
+    margin = { active:false, shares:0, debit:0, cost:0, hist:[] };
+    document.getElementById("mSpot").disabled = true;
+    document.getElementById("mSpot").value = 50;
+    setCoach("mCoach", "<p><strong>Reset.</strong> Deposit cash, buy on margin, then stress the mark-to-market price.</p>");
+    updateMarginUI();
+  });
+  updateMarginUI();
+
+  /* ===== SHORT ===== */
+  var shortPath = makePath(55, 50, 60).map(function (p, i) {
+    if (i < 25) return clamp(50 - i * 0.28, 40, 51);
+    return clamp(43 + (i - 25) * 0.55, 40, 68);
+  });
+  var shortState = { open:false, entry:null, shares:0, covered:false, coverPx:null };
+  var sTimer = null;
+  function sIdx() { return +document.getElementById("sPlayhead").value; }
+  function sPx() { return shortPath[sIdx()]; }
+  function drawShortChart() {
+    drawLineChart(document.getElementById("shortChart"), shortPath, {
+      playIdx: sIdx(),
+      entry: shortState.entry,
+      cover: shortState.covered ? shortState.coverPx : null
+    });
+  }
+  function refreshShort() {
+    document.getElementById("sSpot").textContent = money(sPx());
+    document.getElementById("sEntry").textContent = shortState.entry != null ? money(shortState.entry) : "—";
+    var pnlEl = document.getElementById("sPnL");
+    var posEl = document.getElementById("sPos");
+    if (shortState.open && !shortState.covered) {
+      var pnl = (shortState.entry - sPx()) * shortState.shares;
+      pnlEl.textContent = money(pnl);
+      pnlEl.className = "v " + (pnl >= 0 ? "good" : "bad");
+      posEl.textContent = "Short " + shortState.shares;
+      posEl.className = "v warn";
+    } else if (shortState.covered) {
+      var pnl2 = (shortState.entry - shortState.coverPx) * shortState.shares;
+      pnlEl.textContent = money(pnl2);
+      pnlEl.className = "v " + (pnl2 >= 0 ? "good" : "bad");
+      posEl.textContent = "Closed"; posEl.className = "v";
+    } else {
+      pnlEl.textContent = "—"; pnlEl.className = "v";
+      posEl.textContent = "Flat"; posEl.className = "v";
+    }
+    drawShortChart();
+  }
+  document.getElementById("sPlayhead").addEventListener("input", refreshShort);
+  document.getElementById("sPlay").addEventListener("click", function () {
+    var btn = this;
+    if (sTimer) { clearInterval(sTimer); sTimer = null; btn.textContent = "Play"; return; }
+    btn.textContent = "Pause";
+    sTimer = setInterval(function () {
+      var ph = document.getElementById("sPlayhead");
+      if (+ph.value >= 59) { clearInterval(sTimer); sTimer = null; btn.textContent = "Play"; return; }
+      ph.value = +ph.value + 1;
+      refreshShort();
+    }, 220);
+  });
+  document.getElementById("sResetPath").addEventListener("click", function () {
+    if (sTimer) { clearInterval(sTimer); sTimer = null; document.getElementById("sPlay").textContent = "Play"; }
+    document.getElementById("sPlayhead").value = 0;
+    refreshShort();
+  });
+  document.getElementById("sOpen").addEventListener("click", function () {
+    if (shortState.open && !shortState.covered) return;
+    shortState = { open:true, entry:sPx(), shares:+document.getElementById("sShares").value || 100, covered:false, coverPx:null };
+    document.getElementById("sCover").disabled = false;
+    document.getElementById("sOpen").disabled = true;
+    document.getElementById("sOutcome").style.display = "none";
+    setCoach("sCoach",
+      "<p><strong>Short opened.</strong> Borrowed and sold " + shortState.shares + " at " + money(shortState.entry) +
+      ". Requires a margin account. Profit if price falls; loss if price rises — theoretically unlimited upside risk.</p>" +
+      "<p>Play or scrub, then Buy to cover.</p>");
+    refreshShort();
+  });
+  document.getElementById("sCover").addEventListener("click", function () {
+    if (!shortState.open || shortState.covered) return;
+    shortState.covered = true;
+    shortState.coverPx = sPx();
+    document.getElementById("sCover").disabled = true;
+    document.getElementById("sOpen").disabled = false;
+    var pnl = (shortState.entry - shortState.coverPx) * shortState.shares;
+    var box = document.getElementById("sOutcome");
+    box.style.display = "block";
+    box.className = "outcome-box " + (pnl >= 0 ? "filled" : "loss");
+    box.innerHTML = "<strong>Covered.</strong> Bought back @ " + money(shortState.coverPx) +
+      ". P/L = (" + money(shortState.entry) + " − " + money(shortState.coverPx) + ") × " + shortState.shares +
+      " = <strong>" + money(pnl) + "</strong>.";
+    setCoach("sCoach",
+      "<p><strong>Closed short.</strong> Entry " + money(shortState.entry) + ", cover " + money(shortState.coverPx) +
+      ", result " + money(pnl) + ".</p>" +
+      (pnl >= 0
+        ? "<p>Price fell — classic short profit. Exam: sell borrowed stock first; buy to close later.</p>"
+        : "<p>Price rose — short loss. No cap on how high the stock can go → theoretically unlimited risk.</p>") +
+      "<p>Also tested: shorts are margin transactions; short seller may owe dividends while short.</p>");
+    refreshShort();
+  });
+  document.getElementById("sReset").addEventListener("click", function () {
+    shortState = { open:false, entry:null, shares:0, covered:false, coverPx:null };
+    document.getElementById("sCover").disabled = true;
+    document.getElementById("sOpen").disabled = false;
+    document.getElementById("sOutcome").style.display = "none";
+    setCoach("sCoach", "<p><strong>Reset.</strong> Sell short at spot, animate price, then buy to cover.</p>");
+    refreshShort();
+  });
+  refreshShort();
+
+  /* ===== SUITABILITY & FIDUCIARY ===== */
+  var SUITS = [
+    {
+      title: "Widow, 3-year cash need, advisory account",
+      profile: "IAR hat. Client is 68, recently widowed, needs $80k for a home remodel in ~3 years, moderate willingness but low capacity, rest is long-term. Dual registrant offers a private REIT (illiquid, 7-year hold) that pays the firm more.",
+      choices: [
+        "Recommend the private REIT — higher payout, still alternative income",
+        "Keep the 3-year slice in cash / T-bills / short Treasuries; invest the long-term sleeve separately",
+        "100% small-cap growth because she said she can handle risk",
+        "Variable annuity with 8-year CDSC for tax deferral"
+      ],
+      answer: 1,
+      explainCorrect: "<p><strong>Correct — fiduciary.</strong> Advisory account = care + loyalty. Match liquidity/time constraints. Illiquid REIT fails the 3-year need; extra compensation is a conflict that must not steer a worse product.</p>",
+      explainWrong: "<p><strong>Not best interest.</strong> Fiduciary duty on an advisory account forbids steering into an illiquid, conflicted product that misses a known cash date.</p>"
+    },
+    {
+      title: "BD commission account — income, high tax bracket",
+      profile: "Agent at a BD (suitability context). Client: 45, 37% federal bracket, taxable account, wants investment-grade income, no advisory relationship.",
+      choices: [
+        "High-yield corporates inside a story about an IRA she does not have",
+        "Investment-grade municipal bonds after checking tax-equivalent yield",
+        "Nonqualified VA with surrender charges solely for tax deferral",
+        "Speculative uncovered calls for income"
+      ],
+      answer: 1,
+      explainCorrect: "<p><strong>Correct — suitability.</strong> High bracket + taxable + quality income → munis (TEY vs corporates). Product must fit objectives and tax even without an advisory wrap.</p>",
+      explainWrong: "<p><strong>Mismatch.</strong> HY credit risk, VA surrender, or naked options do not fit investment-grade taxable income.</p>"
+    },
+    {
+      title: "Dual registrant — wrap vs C shares",
+      profile: "Same person is IAR and agent. Client is in a 1% wrap advisory account. Person recommends Class C mutual fund shares with ~1% 12b-1 for a 20-year horizon because C shares pay ongoing trail.",
+      choices: [
+        "OK — dual registration lets either duty apply",
+        "Problem: advisory hat is on; C shares for a long horizon are a fiduciary red flag (level load)",
+        "OK if the fund category matches the IPS",
+        "Required because wraps must use C shares"
+      ],
+      answer: 1,
+      explainCorrect: "<p><strong>Correct.</strong> The wrap/advisory account controls: fiduciary standard. Long-horizon level-load C shares chew return and look like compensation steering.</p>",
+      explainWrong: "<p><strong>Wrong hat.</strong> Dual registration does not let you pick the weaker duty. Category match alone is not enough under fiduciary care/loyalty.</p>"
+    },
+    {
+      title: "Performance fee on new 2026 contract",
+      profile: "SEC-registered IA. New contract July 2026. Client has $1.2M with the adviser and $2.0M net worth excluding primary residence. Firm wants a performance fee.",
+      choices: [
+        "Allowed under the old $1.1M / $2.2M tests",
+        "Generally not — below qualified-client thresholds ($1.4M AUM with adviser or >$2.7M NW as of Jun 29, 2026)",
+        "Always allowed if the client signs a waiver",
+        "Allowed because Section 205 always permits performance fees"
+      ],
+      answer: 1,
+      explainCorrect: "<p><strong>Correct.</strong> Rule 205-3 qualified client (as of June 29, 2026): generally $1.4M under management with that adviser or net worth over $2.7M (home out). This client misses both.</p>",
+      explainWrong: "<p><strong>Stale or false.</strong> Dollar tests were updated; waivers do not create a 205-3 exception; Section 205 is a ban with narrow exceptions.</p>"
+    },
+    {
+      title: "Conservative client asked about shorting a meme stock",
+      profile: "IAR. Client: preservation objective, low risk tolerance, no options/short experience. Client saw social media and asks to short a volatile meme name in the advisory account.",
+      choices: [
+        "Execute the short — fiduciary means do whatever the client orders",
+        "Educate on theoretically unlimited short risk and margin; document; decline if it violates IPS / risk profile",
+        "Allow it if they sign a margin agreement only",
+        "Switch them to a BD suitability account and short immediately"
+      ],
+      answer: 1,
+      explainCorrect: "<p><strong>Correct.</strong> Fiduciary care: process against capacity, willingness, and IPS. Shorts need margin and carry unlimited upside risk — a classic mismatch for preservation clients. Educate and, if needed, refuse; document.</p>",
+      explainWrong: "<p><strong>Not fiduciary.</strong> Blind obedience is not the IA standard. Margin paperwork alone does not make an unlimited-risk short appropriate for a preservation client.</p>"
+    }
+  ];
+  var suitList = document.getElementById("suitList");
+  SUITS.forEach(function (s, i) {
+    var b = document.createElement("button");
+    b.type = "button";
+    b.className = "scenario-btn" + (i === 0 ? " active" : "");
+    b.innerHTML = '<span class="tag">Vignette ' + (i + 1) + "</span>" + s.title;
+    b.addEventListener("click", function () {
+      suitList.querySelectorAll(".scenario-btn").forEach(function (x) { x.classList.remove("active"); });
+      b.classList.add("active");
+      showSuit(i);
+    });
+    suitList.appendChild(b);
+  });
+  function showSuit(i) {
+    var s = SUITS[i];
+    document.getElementById("suitTitle").textContent = s.title;
+    document.getElementById("suitProfile").innerHTML = "<strong>Profile.</strong> " + s.profile;
+    var box = document.getElementById("suitChoices");
+    box.innerHTML = "";
+    box.removeAttribute("data-done");
+    s.choices.forEach(function (c, j) {
+      var btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = "choice";
+      btn.textContent = c;
+      btn.addEventListener("click", function () {
+        if (box.getAttribute("data-done")) return;
+        box.setAttribute("data-done", "1");
+        var buttons = box.querySelectorAll(".choice");
+        buttons.forEach(function (b2, k) {
+          b2.disabled = true;
+          if (k === s.answer) b2.classList.add("correct");
+          if (k === j && j !== s.answer) b2.classList.add("wrong");
+        });
+        if (j === s.answer) setCoach("suitCoach", s.explainCorrect);
+        else setCoach("suitCoach", s.explainWrong + s.explainCorrect);
+      });
+      box.appendChild(btn);
+    });
+    setCoach("suitCoach", "<p>Read the profile. Tap the best recommendation. Duty depends on the hat: IA fiduciary vs BD suitability.</p>");
+  }
+  showSuit(0);
+})();
+</script>
+</body>
+</html>
