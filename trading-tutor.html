@@ -114,11 +114,6 @@ canvas.chart { width:100%; height:auto; display:block; background:#151c28; borde
     <h2>Simulated trading desk for the Uniform Investment Adviser Law Exam</h2>
     <p>NASAA outline level. Equity order types, option strategies, Reg&nbsp;T margin, short sales, and suitability vs fiduciary duty. Study aid only — not live markets, not NASAA/FINRA materials.</p>
   </section>
-  <div class="voice-bar" style="margin:0 0 .75rem">
-    <label for="voicePick" style="font-size:.82rem;color:var(--muted)">Voice</label>
-    <select id="voicePick" style="flex:1;min-width:180px;max-width:420px"></select>
-    <span class="status" id="voicePickHint">Default: Google US English (you can still pick another).</span>
-  </div>
   <nav class="tabs" role="tablist" aria-label="Tutor sections">
     <button type="button" class="tab active" data-tab="orders" role="tab" aria-selected="true">Orders</button>
     <button type="button" class="tab" data-tab="scenarios" role="tab">Scenarios</button>
@@ -385,85 +380,33 @@ canvas.chart { width:100%; height:auto; display:block; background:#151c28; borde
   var currentUtter = null;
   var preferredVoice = null;
 
-  function voiceScore(v) {
-    var n = v.name || "";
-    var lang = v.lang || "";
-    var s = 0;
-    if (!/en/i.test(lang) && !/english/i.test(n)) return -1000;
-    // Paul prefers Chrome Google US English on Mac.
-    if (/^google us english$/i.test(n)) s += 300;
-    if (/google.*english.*united states/i.test(n)) s += 300;
-    if (/^google uk english female$/i.test(n)) s += 120;
-    if (/^google/i.test(n) && /en/i.test(lang)) s += 80;
-    if (/en-US/i.test(lang)) s += 40;
-    else if (/en/i.test(lang)) s += 15;
-    if (/samantha|karen|moira|serena|allison|ava|susan|zira|aria|jenny/i.test(n)) s += 50;
-    if (/natural|neural|premium|enhanced/i.test(n)) s += 60;
-    if (/compact|espeak|android|bad news|bahh|bells|boing|bubbles|cellos|deranged|good news|hysterical|pipe organ|trinoids|whisper|zarvox|superstar|princess|junior|kathy|albert/i.test(n)) s -= 250;
-    return s;
-  }
-  function englishVoices() {
-    var voices = synth ? (synth.getVoices() || []) : [];
-    return voices.filter(function (v) { return voiceScore(v) > -500; })
-      .sort(function (a, b) { return voiceScore(b) - voiceScore(a); });
+  function pickGoogleUs() {
+    if (!synth) return null;
+    var voices = synth.getVoices() || [];
+    var i, v, name;
+    for (i = 0; i < voices.length; i++) {
+      v = voices[i];
+      name = v.name || "";
+      if (/^google us english$/i.test(name)) return v;
+      if (/google.*english.*united states/i.test(name)) return v;
+    }
+    for (i = 0; i < voices.length; i++) {
+      v = voices[i];
+      name = v.name || "";
+      if (/^google/i.test(name) && /en-US/i.test(v.lang || "")) return v;
+    }
+    for (i = 0; i < voices.length; i++) {
+      v = voices[i];
+      if (/^google/i.test(v.name || "") && /en/i.test(v.lang || "")) return v;
+    }
+    return null;
   }
   function pickVoice() {
-    var list = englishVoices();
-    if (!list.length) return null;
-    var saved = "";
-    try { saved = localStorage.getItem("s65-voice") || ""; } catch (e) {}
-    var i;
-    if (saved) {
-      for (i = 0; i < list.length; i++) {
-        if (list[i].name === saved) return list[i];
-      }
-    }
-    return list[0];
-  }
-  function fillVoicePick() {
-    var sel = document.getElementById("voicePick");
-    var hint = document.getElementById("voicePickHint");
-    if (!sel || !synth) return;
-    var list = englishVoices();
-    var cur = sel.value;
-    sel.innerHTML = "";
-    if (!list.length) {
-      var o = document.createElement("option");
-      o.textContent = "No English voices yet";
-      sel.appendChild(o);
-      return;
-    }
-    var i, opt, best = pickVoice();
-    for (i = 0; i < list.length; i++) {
-      opt = document.createElement("option");
-      opt.value = list[i].name;
-      opt.textContent = list[i].name + (list[i].lang ? " (" + list[i].lang + ")" : "");
-      sel.appendChild(opt);
-    }
-    sel.value = (best && best.name) || list[0].name;
-    preferredVoice = best || list[0];
-    if (hint) hint.textContent = preferredVoice ? ("Speaking as " + preferredVoice.name) : "Voice ready";
+    return pickGoogleUs();
   }
   if (synth) {
     preferredVoice = pickVoice();
-    synth.onvoiceschanged = function () { fillVoicePick(); };
-    fillVoicePick();
-    var voiceSel = document.getElementById("voicePick");
-    if (voiceSel) {
-      voiceSel.addEventListener("change", function () {
-        var list = englishVoices();
-        var i;
-        preferredVoice = null;
-        for (i = 0; i < list.length; i++) {
-          if (list[i].name === voiceSel.value) preferredVoice = list[i];
-        }
-        try { localStorage.setItem("s65-voice", voiceSel.value); } catch (e) {}
-        var hint = document.getElementById("voicePickHint");
-        if (hint && preferredVoice) hint.textContent = "Speaking as " + preferredVoice.name;
-        stopVoice();
-        speakText("This is the voice for the trading tutor.", voiceSel);
-      });
-    }
+    synth.onvoiceschanged = function () { preferredVoice = pickVoice(); };
   }
   function coachPlain(el) {
     if (!el) return "";
