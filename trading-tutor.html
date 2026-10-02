@@ -117,7 +117,7 @@ canvas.chart { width:100%; height:auto; display:block; background:#151c28; borde
   <div class="voice-bar" style="margin:0 0 .75rem">
     <label for="voicePick" style="font-size:.82rem;color:var(--muted)">Voice</label>
     <select id="voicePick" style="flex:1;min-width:180px;max-width:420px"></select>
-    <span class="status" id="voicePickHint">Prefering macOS voices (Samantha, etc.) over Chrome’s Google voice.</span>
+    <span class="status" id="voicePickHint">Default: Google US English (you can still pick another).</span>
   </div>
   <nav class="tabs" role="tablist" aria-label="Tutor sections">
     <button type="button" class="tab active" data-tab="orders" role="tab" aria-selected="true">Orders</button>
@@ -390,18 +390,15 @@ canvas.chart { width:100%; height:auto; display:block; background:#151c28; borde
     var lang = v.lang || "";
     var s = 0;
     if (!/en/i.test(lang) && !/english/i.test(n)) return -1000;
-    // Prefer real macOS / Windows local voices over Chrome's robotic Google cloud voices.
-    if (v.localService === true) s += 200;
-    if (v.localService === false) s -= 80;
-    if (/^google/i.test(n)) s -= 150;
+    // Paul prefers Chrome Google US English on Mac.
+    if (/^google us english$/i.test(n)) s += 300;
+    if (/google.*english.*united states/i.test(n)) s += 300;
+    if (/^google uk english female$/i.test(n)) s += 120;
+    if (/^google/i.test(n) && /en/i.test(lang)) s += 80;
     if (/en-US/i.test(lang)) s += 40;
-    else if (/en-AU|en-GB|en-IE|en-ZA/i.test(lang)) s += 25;
     else if (/en/i.test(lang)) s += 15;
-    if (/samantha/i.test(n)) s += 160;
-    if (/karen|moira|serena|fiona|tessa|veena|nicky|siri/i.test(n)) s += 110;
-    if (/alex|daniel|fred|tom|aaron|arthur/i.test(n)) s += 70;
-    if (/allison|ava|susan|victoria|kate|zoe|zira|aria|jenny/i.test(n)) s += 90;
-    if (/natural|neural|premium|enhanced/i.test(n)) s += 100;
+    if (/samantha|karen|moira|serena|allison|ava|susan|zira|aria|jenny/i.test(n)) s += 50;
+    if (/natural|neural|premium|enhanced/i.test(n)) s += 60;
     if (/compact|espeak|android|bad news|bahh|bells|boing|bubbles|cellos|deranged|good news|hysterical|pipe organ|trinoids|whisper|zarvox|superstar|princess|junior|kathy|albert/i.test(n)) s -= 250;
     return s;
   }
@@ -416,14 +413,10 @@ canvas.chart { width:100%; height:auto; display:block; background:#151c28; borde
     var saved = "";
     try { saved = localStorage.getItem("s65-voice") || ""; } catch (e) {}
     var i;
-    if (saved && !/^google/i.test(saved)) {
+    if (saved) {
       for (i = 0; i < list.length; i++) {
         if (list[i].name === saved) return list[i];
       }
-    }
-    // Drop a previously saved robotic Google voice.
-    if (saved && /^google/i.test(saved)) {
-      try { localStorage.removeItem("s65-voice"); } catch (e) {}
     }
     return list[0];
   }
